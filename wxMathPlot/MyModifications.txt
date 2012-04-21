@@ -1,0 +1,159 @@
+modifications:
+
+-mouse drag zooming can cancel by pressing right mouse key
+-Zoom only X axis (zoom area is shaded by light colour brush)
+
+New layers:
+-mpPointLayer
+	-If attach second point:
+	*Points between come's:
+		-coloured strenght line in below
+		-Customable text. Example points between distance
+-mpFXYBar
+-mpFXYCandleStick
+
+
+
+[mpFXYBar]
+special member functions:
+virtual bool GetLSB(double &l) 
+-default lsb = 1px
+-other lsb = dx value (calculate to pixels)
+-return true if want to use
+
+
+[mpFXYCandleStick] 2.11.2009
+special member functions:
+virtual bool GetNext(double & x, double & yCandleMin,double & yCandleMax, double& yStickMin, double& yStickMax);
+virtual bool GetLSB( double& ) //like mpFXYBar
+void SetCandleBrush( wxBrush )
+void SetCandlePen( wxPen )
+void SetStickPen( wxPen )
+
+usefull classes:
+
+class candleStick
+{
+    public:
+        int m_x,
+            m_CandleMin, m_CandleMax,
+            m_StickMin, m_StickMax;
+        candleStick(int x, int candlemin, int candlemax, int stickmin, int stickmax)
+        {   m_x = x;
+            m_CandleMin = candlemin;
+            m_CandleMax = candlemax;
+            m_StickMin  = stickmin;
+            m_StickMax  = stickmax;
+        }
+        candleStick(const candleStick& copy)
+        { m_x = copy.m_x;
+          m_CandleMin = copy.m_CandleMin;
+          m_CandleMax = copy.m_CandleMax;
+          m_StickMin = copy.m_StickMin;
+          m_StickMax = copy.m_StickMax;
+        }
+};
+class candleStickLayer: public mpFXYCandleStick
+{
+    private:
+        std::deque<candleStick> data;
+        std::deque<candleStick>::iterator it;
+
+        virtual void Rewind()
+        {
+            it = data.begin();
+        }
+        virtual bool GetNext(double & x, double & yCandleMin,double & yCandleMax, double& yStickMin, double& yStickMax)
+        {
+            if(it!=data.end())
+            {
+                x = it->m_x;
+                yCandleMin = it->m_CandleMin;
+                yCandleMax = it->m_CandleMax;
+                yStickMin = it->m_StickMin;
+                yStickMax = it->m_StickMax;
+                it++;
+                return true;
+            }
+            return false;
+        }
+		//maybe want calculate better value for these:
+        virtual double GetMinY()	{ return 0; } 
+        virtual double GetMaxY()	{ return 10; }
+        virtual double GetMinX()	{ return 0; }
+        virtual double GetMaxX() 	{ return 10; }
+}
+
+
+
+[mpPointLayer]
+Point layer can used to point curve several ways.
+Pointer shape is changeable: 
+-mpCIRCLE
+-mpDIAMOND
+-mpSQUARE
+-mpELLIPSE
+-mpARROW_UP
+-mpARROW_DOWN
+-mpARROW_UPDOWN
+
+Pointer tagging is changeable:
+SetTaggingSHape(mpVERTICAL_LINE|mpHORIZONTAL_LINE)
+-mpVERTICAL_LINE
+-mpHORIZONTAL_LINE
+-mpCROSS_LINES
+
+if point layer enabled and SetParent() is set:
+	When mouse position changes, layer post wxMouseEvent (wxEVT_MOTION) to parent 
+	When point position changes, layer post wxMouseEvent (wxEVT_LEFT_UP) to parent
+
+If parent catch the event, it can call mpPointLayer functions like:
+-GetPosition(x,y)		//to catch curve coordinate (curve axes)
+-GetCursorPosition(x,y)	//to catch cursor coordinate (curve axes)
+
+
+
+functions for end user:
+bool 	IsPointModifiable()
+bool 	IsPointDefined()
+void 	SetParent(wxWindow*)
+//void 	SetSecondPoint(mpPointLayer*)
+void 	SetShape(mpShape)
+void 	SetTaggingShape(int)
+bool 	GetPosition(double& x, double& y)
+bool 	SetPosition(double x, double y)
+void 	UnDefine()
+bool 	GetCursorPosition(double& x, double& y)
+void 	EnableModify(bool)
+void 	DragOnlyPoint(bool)
+wxMenu* GetPopupMenu()
+
+
+
+[mpPointLayer]
+usage tips:
+
+//there is needed implement in now only in mpFXY Layer
+
+//you must create first mpFXY layer
+mpFXYLayerInstance = new mpFXY(..)
+
+int eventId = wxNewId(); //event id, for mouse events
+
+//constructors:
+//mpPointLayer(mpLayer==mpFXY, label)
+//mpPointLayer(mpLayer==mpFXY, label, brush, class where derive events, eventid)
+mpPointLayer *PLayer = new mpPointLayer(mpFXYLayerInstance, _("P"), wxTRANSPARENT_BRUSH, this, eventId );
+PLayer->SetVisible(false);	//show point
+PLayer->EnableModify(true);	//for enable point modifity by mouse
+PLayer->SetPosition(x,y);	//set position
+PLayer->UnDefine();			//for undefine point
+
+Connect(eventId, wxEVT_LEFT_UP, (wxObjectEventFunction)&myframe::PEvent); //for left up event
+
+//event handler..
+myframe::P1Event(wxCommandEvent& event)
+{
+double x,y;
+PLayer->GetPosition(x,y);
+}
