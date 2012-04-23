@@ -65,19 +65,19 @@
 #include <vector>
 
 // #include <wx/wx.h>
-#include "wx/defs.h"
-#include "wx/menu.h"
-#include "wx/scrolwin.h"
-#include "wx/event.h"
-#include "wx/dynarray.h"
-#include "wx/pen.h"
-#include "wx/dcmemory.h"
-#include "wx/string.h"
-#include "wx/print.h"
-#include "wx/image.h"
+#include <wx/defs.h>
+#include <wx/menu.h>
+#include <wx/scrolwin.h>
+#include <wx/event.h>
+#include <wx/dynarray.h>
+#include <wx/pen.h>
+#include <wx/dcmemory.h>
+#include <wx/string.h>
+#include <wx/print.h>
+#include <wx/image.h>
 
 #include <wx/tipwin.h>
-
+#include <wx/gdicmn.h>
 
 #include <deque>
 #include <map>
@@ -85,6 +85,7 @@
 WX_DECLARE_LIST(wxPoint, PointList);
 #include <wx/listimpl.cpp>
 WX_DEFINE_LIST(PointList);
+
 
 // For memory leak debug
 #ifdef _WINDOWS
@@ -109,6 +110,7 @@ class WXDLLIMPEXP_MATHPLOT mpFX;
 class WXDLLIMPEXP_MATHPLOT mpFY;
 class WXDLLIMPEXP_MATHPLOT mpFXY;
 class WXDLLIMPEXP_MATHPLOT mpFXYBar;
+class WXDLLIMPEXP_MATHPLOT mpFYXBar;
 class WXDLLIMPEXP_MATHPLOT mpFXYCandleStick;
 class WXDLLIMPEXP_MATHPLOT mpFXYVector;
 class WXDLLIMPEXP_MATHPLOT mpScaleX;
@@ -160,6 +162,13 @@ enum mpShape
     ,mpARROW_UPDOWN
 };
 
+struct mpXY
+{
+    double x, y;
+    mpXY(double _x, double _y){x=_x;y=_y;}
+    mpXY(const mpXY& copy){x=copy.x;y=copy.y;}
+};
+
 /** Plot layer, abstract base class.
     Any number of mpLayer implementations can be attached to mpWindow.
     Examples for mpLayer implementations are function graphs, or scale rulers.
@@ -205,7 +214,6 @@ public:
         @return whether the layer is an point layer
         @sa mpPointLayer::IsPointEnabled */
     virtual bool IsPointLayer() { return false; }
-    virtual bool IsPointEnabled() { return false; };
     virtual void UpdateMouseCoord(mpWindow& w, wxEvent& event){}
     /** Get inclusive left border of bounding box.
         @return Value
@@ -627,6 +635,11 @@ protected:
 
 /** mpFXYBar class
 *   by Jussi Vatjus-Anttila
+*
+*   |''|
+*   |  |''|
+*   |  |  |''|
+* ''''''''''''''''''''''''''''''''
 */
 class WXDLLIMPEXP_MATHPLOT mpFXYBar : public mpLayer
 {
@@ -647,7 +660,7 @@ public:
         @param x Returns X value
         @param y Returns Y value
     */
-    virtual bool GetNextXY(double & x, double & y) = 0;
+    virtual bool GetNextXY(double & x, double & y, wxString& label) = 0;
     /**
      * Bar chart Lowest significant bit
      * default: not in use (return false)
@@ -676,12 +689,84 @@ public:
     virtual void Plot(wxDC & dc, mpWindow & w);
 
     void SetGradientBackColour(bool t){m_gradienBackground=t;}
+    void ShowLabel(bool t){m_showLabel = t; }
+    void UseCustomLabel(bool t){ m_useCustomLabel = t;}
 
 protected:
     int m_flags; //!< Holds label alignment
     bool m_gradienBackground;
+    bool m_showLabel;
+    bool m_useCustomLabel;
 
-    DECLARE_CLASS(mpFXY)
+    DECLARE_CLASS(mpFXYBar)
+};
+/** mpFYXBar class
+*   by Jussi Vatjus-Anttila
+*
+*   |-----+
+*   |-----+---+
+*   |--------++
+*   |--------+
+´* '''''''''''''''''''''
+*/
+class WXDLLIMPEXP_MATHPLOT mpFYXBar : public mpLayer
+{
+public:
+    /** @param name  Label
+        @param flags Label alignment, pass one of #mpALIGN_NE, #mpALIGN_NW, #mpALIGN_SW, #mpALIGN_SE.
+    */
+    mpFYXBar(wxString name = wxEmptyString, int flags = mpALIGN_NE);
+    virtual ~mpFYXBar(){}
+
+    /** Rewind value enumeration with mpFXY::GetNextXY.
+        Override this function in your implementation.
+    */
+    virtual void Rewind() = 0;
+
+    /** Get locus value for next N.
+        Override this function in your implementation.
+        @param x Returns X value
+        @param y Returns Y value
+    */
+    virtual bool GetNextXY(double & x, double & y, wxString& label) = 0;
+    /**
+     * Bar chart Lowest significant bit
+     * default: not in use (return false)
+     */
+    virtual bool GetLSB(double &l){ return false; }
+    /** Returns the actual minimum X data (loaded in SetData).
+      */
+    virtual double GetMinX() = 0;
+
+    /** Returns the actual minimum Y data (loaded in SetData).
+      */
+    virtual double GetMinY() = 0;
+
+    /** Returns the actual maximum X data (loaded in SetData).
+      */
+    virtual double GetMaxX() = 0;
+
+    /** Returns the actual maximum  Y data (loaded in SetData).
+      */
+    virtual double GetMaxY() = 0;
+
+    /** Layer plot handler.
+        This implementation will plot the locus in the visible area and
+        put a label according to the aligment specified.
+    */
+    virtual void Plot(wxDC & dc, mpWindow & w);
+
+    void SetGradientBackColour(bool t){m_gradienBackground=t;}
+    void ShowLabel(bool t){m_showLabel = t; }
+    void UseCustomLabel(bool t){ m_useCustomLabel = t;}
+
+protected:
+    int m_flags; //!< Holds label alignment
+    bool m_gradienBackground;
+    bool m_showLabel;
+    bool m_useCustomLabel;
+
+    DECLARE_CLASS(mpFYXBar)
 };
 /** mpFXYCandleStick class
 *   by Jussi Vatjus-Anttila
@@ -878,6 +963,7 @@ public:
 protected:
     int m_flags; //!< Holds label alignment
     bool m_markCorners; //!< Mark the curve corners
+    wxCoord m_cornerMarkSize;
 
 	// Data to calculate label positioning
 	wxCoord maxDrawX, minDrawX, maxDrawY, minDrawY;
@@ -1142,6 +1228,11 @@ public:
                      const wxSize &size = wxDefaultSize,
                      long flags = 0);
     virtual ~mpWindow();
+
+    /** Init popup menu.
+        @todo It might be possible to format the menu outside of class some how...
+    */
+    void InitPopupMenu();
 
     /** Get reference to context menu of the plot canvas.
         @return Pointer to menu. The menu can be modified.
@@ -1512,6 +1603,7 @@ public:
 	const wxColour& GetAxesColour() { return m_axColour; };
 
 
+    void SetHelpString(wxString msg, wxString title){ OnMouseHelpString=msg; OnMouseHelpStringTitle=title;}
 
 protected:
     void OnPaint         (wxPaintEvent     &event); //!< Paint handler, will plot all attached layers
@@ -1621,6 +1713,10 @@ protected:
     wxColour    m_gradienDestColour;
     wxDirection m_gradienDirect;
     wxRect      *m_zoomingRect;
+    bool        m_zoomingHorizontally;
+
+    wxString    OnMouseHelpString;
+    wxString    OnMouseHelpStringTitle;
 
 
     DECLARE_DYNAMIC_CLASS(mpWindow)
@@ -2116,7 +2212,7 @@ class polygon
 		{
 			PointList out;
 			PointList::iterator it;
-			for(it=m_polygon.begin();it!=m_polygon.end();it++)
+			for(it=m_polygon.begin();it!=m_polygon.end();++it)
 			{
 				out.Append( rotate(**it, angle, scale) );
 			}
@@ -2136,10 +2232,10 @@ class polygon
 		*       [x y]|  -sin Ø    s * cos Ø |=[sx*(cos Ø)*x-(sin Ø)*y,
 		*            |_    0          0    _|  (sin Ø)*x+sy*(cos Ø)*y]
 		*/
-		wxPoint* rotate(wxPoint pt, double angle, double scale)
+		wxPoint* rotate(wxPoint pt, double angle, double scale, bool angleInRadians=false)
 		{
 			 wxPoint *point = new wxPoint();
-			 double theta = 2*M_PI/360*angle;
+			 double theta = angleInRadians?angle:2*M_PI/360*angle;
 			 point->x = (int)(scale * (cos(theta) * pt.x - sin(theta) * pt.y) + 0.5);
 			 point->y = (int)(scale * (sin(theta) * pt.x +  cos(theta) * pt.y) +0.5);
 			 return point;
@@ -2149,15 +2245,7 @@ class mpPointDeriveClass {
     public:
         mpPointDeriveClass(){}
         /** This virtual function must implement to final object */
-        virtual wxString operator() (double x0, double x1, double y0, double y1) = 0;
-        //virtual void GetPosition(int xmin, int xmax, int y){}
-};
-class TestPointClass : public mpPointDeriveClass
-{
-    public:  TestPointClass(){}
-    protected:
-    virtual wxString operator() (double x0, double x1, double y0, double y1)
-            { return wxString::Format(_("dX: %f\ndY: %f"), (x1- x0), (y1- y0)); }
+        virtual void customPlot(wxDC & dc, mpWindow & w, double x0, double y0, double x1, double y1, wxPoint p0, wxPoint p1, int maxYpx) {}
 };
 
 class WXDLLIMPEXP_MATHPLOT mpPointLayer : public mpLayer
@@ -2189,10 +2277,14 @@ class WXDLLIMPEXP_MATHPLOT mpPointLayer : public mpLayer
         /** Specifies that this is an Info box layer.
             @return true if modify is enabled
             @sa mpLayer::IsPointEnabled */
-        bool IsPointModifiable() { return m_EnableModify|m_DragOnlyPoint; }
+        bool IsPointModifiable() { return m_EnableModify; }
+        bool IsDraggingOnlyFromPoint() { return m_DragOnlyPoint; }
+        /** Check if point is defined */
         bool IsPointDefined(){ return m_defined;}
+        /** If parent is defined becouse of events
+         *  function return event ID for Connect() */
         int  GetEventId(){return eventId;}
-		/** Specifies that this is an Info box layer.
+		/** Specifies that this is an point layer.
             @return always \a TRUE
             @sa mpLayer::IsPointLayer */
         virtual bool IsPointLayer() { return true; }
@@ -2223,7 +2315,7 @@ class WXDLLIMPEXP_MATHPLOT mpPointLayer : public mpLayer
 			@param	x[in] 	point x-position
 			@param 	y[in]	point y-position
 			@return true if allowed*/
-        bool SetPosition(double x, double y);
+        bool SetPosition(double &x, double &y);
         /** Undefine point */
         void UnDefine();
 		/** Returns the nearest graph position at cursor
@@ -2265,7 +2357,7 @@ class WXDLLIMPEXP_MATHPLOT mpPointLayer : public mpLayer
 		 * virtual function:
 		 *  virtual wxString GenerateString(double x0, double x1, double y0, double y1)
 		 */
-		void SetMiddleTextObject(mpPointDeriveClass *obj){ m_middleTextObject = obj; }
+		void SetExternalObject(mpPointDeriveClass *obj){ m_externalObject = obj; }
 
     protected:
 
@@ -2292,6 +2384,7 @@ class WXDLLIMPEXP_MATHPLOT mpPointLayer : public mpLayer
         bool            m_mouseDefined;     //!< only true if mouse is inside graph
 
         bool            m_EnableModify;		//!< If user wan't change point place with mouse
+        bool            m_cursorInside;
         double          mouseX, mouseY;		//!< contains mouse coordinates
         bool            m_DragOnlyPoint;    //!< If true, point modifing is allways possible, but only when mouse draq point
 
@@ -2300,14 +2393,13 @@ class WXDLLIMPEXP_MATHPLOT mpPointLayer : public mpLayer
         //second point variables
 		mpPointLayer*   m_SecondPointLayer;		//!< pointer to 2. mpPointLayer. ex. Calculate distance of 2 points.
 		int				m_ShowShadows;			//!< show shadows betweeb 2 points
-		mpPointDeriveClass *m_middleTextObject;			//!< text shown in middle of 2 points.
+		mpPointDeriveClass *m_externalObject;			//!< text shown in middle of 2 points.
 
         wxTipWindow*    m_tooltip;
         wxMenu          m_popmenu;              //!< user handled popupmenu when clicked the point shape
         //bool            m_showHelpLine;
     DECLARE_DYNAMIC_CLASS(mpPointLayer)
 };
-
 
 /*@}*/
 
