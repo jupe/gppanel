@@ -23,8 +23,10 @@
 #include <map>
 #include <wx/tooltip.h>     //Hereditary class for menus
 #include "mathplot.h"       //wxMathPlot
-#include "gpMenu.h"         //Hereditary class for menus
+#include "menu/gpMenu.h" //Hereditary class for menus
+#include "menu/gpPopupGroup.h"
 #include "math/symbols.h"   //contains all math basic symbols
+
 
 /**
 *   gpLAYER type
@@ -72,10 +74,6 @@ enum gpLabel_e
     ,gpLABEL_X              //!< X-axis label
     ,gpLABEL_Y              //!< Y-axis label
 };
-
-
-#include "gpPopup.h"
-
 
 /** typedef for list of mpLayer */
 typedef std::deque< mpLayer* > mpLayerList_t;
@@ -164,8 +162,8 @@ class gpLayer : public gpMenu, public wxToolTip
 		bool GetLockX();                                           //!< @return Get LockX
 		bool GetLockY();                                           //!< @return Get LockY
 
-		void SetGraphPosition(int pos){ m_graphPosition = pos; }
-		int GetGraphPosition() const{ return m_graphPosition; }
+		void SetGraphPosition(int pos);
+		int GetGraphPosition() const;
 
 
         void SetChartBounds(bool b);								//!< @param b Enable/Disable Chart bounds
@@ -236,25 +234,11 @@ class gpLayer : public gpMenu, public wxToolTip
 		virtual void        RefreshToolTip() { }
 		/** Inhrerited function for refresh labels
         */
-		virtual void        RefreshLabels()
-		{
-            wxString label;
+		virtual void        RefreshLabels();
 
-            if(xaxis) xaxis->SetName( GetXAxisLabel(gpXaxis_type) );
-            if(yaxis) yaxis->SetName( GetYAxisLabel(gpYaxis_type) );
-
-            popupGroupList[gpYAXIS].Select(gpChart_kind);
-            popupGroupList[gpXAXIS].Select(gpChart_kind);
-
-        }
-
-        virtual void SetXAxisType(int kind)
-        {
-            //mpX_TIME/ mpX_NORMAL / mpX_HOUR
-            if(xaxis)xaxis->SetLabelMode(kind);
-        }
-        virtual void SetSamplerate(double d){m_samplerate = d;}
-        virtual void SetFftLength(int i){m_fft_lenght = i;}
+        virtual void SetXAxisType(int kind);
+        virtual void SetSamplerate(double d);
+        virtual void SetFftLength(int i);
         /** Inhrerited function for Set max value of x
         */
 		//virtual void        SetMaxX(double x){ }
@@ -285,130 +269,80 @@ class gpLayer : public gpMenu, public wxToolTip
 
 
         /** @return Tell if Refresh is needed */
-        bool RefreshNeeded() { return m_refreshNeeded; }
+        bool RefreshNeeded();
         /** Refresh:
         *   -chart
         *   -tooltip
         */
-        void Refresh()
-        {
-            m_refreshNeeded = false;
-            RefreshChart();
-            RefreshToolTip();
-            m_sameFormatAsPreviously = true;
-        }
+        void Refresh();
         /** Get visibility.  @return visibility */
-        bool GetVisibility()            { return m_visible; }
+        bool GetVisibility();
         /** Set visibility.  @param visibility boolean */
-        void SetVisibility(bool visible){ m_visible = visible; }
+        void SetVisibility(bool visible);
         /** Get enable status.  @return enable status in boolean */
-        bool GetEnable()            { return m_enable; }
+        bool GetEnable();
         /** Set enablity.  @param enabled boolean */
-        void SetEnable(bool enabled){ m_enable = enabled; }
+        void SetEnable(bool enabled);
 
         /** @return pointer to mpScaleX.
 		 * exmpl. when want use axis popup menu */
-        mpScaleX* GetXAxis(){ return xaxis; }
+        mpScaleX* GetXAxis();
 
 		/** @return pointer to mpScaleY. */
-        mpScaleY* GetYAxis(){ return yaxis; }
+        mpScaleY* GetYAxis();
 
-        void SetYXFormula(wxString yxformula) { m_customYXFormula = yxformula; }	//!< @param yxformula Set formula for chart
-        void SetXFormula(wxString xformula) { m_customXFormula = xformula; }		//!< @param xformula Set formula for x scale
-        void SetYFormula(wxString yformula) { m_customYFormula = yformula; }		//!< @param yformula Set formula for y scale
-        bool IsYXFormula(){ return m_customYXFormula.IsEmpty()?false:true; }		//!< @return true if chart formula is defined
-        bool IsXFormula(){ return m_customXFormula.IsEmpty()?false:true; }			//!< @return true if X formula is defined
-        bool IsYFormula(){ return m_customYFormula.IsEmpty()?false:true; }			//!< @return true if Y formula is defined
-        wxString GetYXFormula() const { return m_customYXFormula; }					//!< @return chart formula
-        wxString GetXFormula() const { return m_customXFormula; }					//!< @return X-scale formula
-        wxString GetYFormula() const { return m_customYFormula; }					//!< @return Y-scale formula
+        void SetYXFormula(wxString yxformula);	//!< @param yxformula Set formula for chart
+        void SetXFormula(wxString xformula);	//!< @param xformula Set formula for x scale
+        void SetYFormula(wxString yformula);	//!< @param yformula Set formula for y scale
+        bool IsYXFormula();						//!< @return true if chart formula is defined
+        bool IsXFormula();						//!< @return true if X formula is defined
+        bool IsYFormula();						//!< @return true if Y formula is defined
+        wxString GetYXFormula() const;			//!< @return chart formula
+        wxString GetXFormula() const;			//!< @return X-scale formula
+        wxString GetYFormula() const;			//!< @return Y-scale formula
 
         /**
          * @param  visibility   grid visibility
          * @param  mode         X&Y grids? default both: (gpXAXIS|gpYAXIS)
          */
-		void  ShowGrid(bool visibility, int mode=gpXAXIS|gpYAXIS)
-		{
-		    if(xaxis && (mode&gpXAXIS) )xaxis->SetTicks(visibility);
-		    if(yaxis && (mode&gpYAXIS) )yaxis->SetTicks(visibility);
-		}
+		void  ShowGrid(bool visibility, int mode=gpXAXIS|gpYAXIS);
 		/**
 		 * Show Corner markers
 		 * Not effects if inherited class not declare
 		 * this virtual function
 		 *  @param visibility
 		 */
-		virtual void ShowCornerMarkers(bool visibility) { }
+		virtual void ShowCornerMarkers(bool visibility);
 		/**
 		 * 	Set continous lines in chart
 		 * 	Not effects if inherited class not declare
 		 * 	this virtual function
 		 *  @param continous
 		 */
-		virtual void SetContinousLine(bool continous) { };
+		virtual void SetContinousLine(bool continous);
 		/**
 		 *	Change event handler call this function
 		 *	Change inherited class chart Y axel scale
 		 *	@param type	  Y axis scale type
 		 */
+
         /**
          *
          */
-        virtual void ShowInfoLayer(bool visibility)
-        {
-            if(nfo) nfo->SetVisible(visibility);
-        }
-		bool SelectXAxisScale(gpAXIS_SCALE type)
-		{
-		    //if(!IsXScaleSupported(type)) return false;
-		    if(!IsXPopupEnabled(gpChart_kind, type)) return false;
-		    gpXaxis_type = type;
-		    m_sameFormatAsPreviously = false;
-		    Refresh();
-		    RefreshLabels();
-
-		    return true;
-		}
+        virtual void ShowInfoLayer(bool visibility);
+		bool SelectXAxisScale(gpAXIS_SCALE type);
 		/**
 		 *	Change event handler call this function
 		 *	Change inherited class chart X axel scale
 		 *	@param type	X axis scale type
 		 *	@return true if success
 		 */
-		bool SelectYAxisScale(gpAXIS_SCALE type)
-		{
-		    //if(!IsYScaleSupported(type)) return false;
-		    if(!IsYPopupEnabled(gpChart_kind, type)) return false;
-		    gpYaxis_type = type;
-		    m_sameFormatAsPreviously = false;
-		    Refresh();
-		    RefreshLabels();
-		    return true;
-		}
+		bool SelectYAxisScale(gpAXIS_SCALE type);
         /** Change chart kind
         *   @param kind     kind to change the layer
         *   @return true if is supported and modified layer
         */
-		bool SetChartKind(gpCHART_KIND kind)
-		{
-		    //if(!IsSupported(kind))  return false;
-		    if(!IsChartTypeEnabled(kind))  return false;
-		    gpChart_kind = kind;
-
-		    gpYaxis_type = gpAXIS_DEFAULT;
-		    gpXaxis_type = gpAXIS_DEFAULT;
-
-		    m_sameFormatAsPreviously = false;
-		    RefreshChart();
-		    RefreshLabels();
-
-		    //last refresh tooltip for current view
-		    /// @note maybe there is case, when tooltip
-		    ///       don't want refresh to this kind of chart view...
-		    ///       example with fft, wan't show tips before fft..
-		    RefreshToolTip();
-		    return true;
-		}
+		bool SetChartKind(gpCHART_KIND kind);
 
 		/**
 		*	Set Label of:
@@ -416,69 +350,17 @@ class gpLayer : public gpMenu, public wxToolTip
 			gpLABEL_X
 			gpLABEL_Y
 		*/
-        void SetLabel(gpCHART_KIND kind, gpLabel_e flg, wxString lb)
-        {
-            switch(flg)
-            {
-                default:
-                case(gpLABEL):      LabelList[kind]=lb; break;
-                case(gpLABEL_X):    xLabelList[kind]=lb; break;
-                case(gpLABEL_Y):    yLabelList[kind]=lb; break;
-            }
-        }
-        void SetAxisUnitLabel(gpCHART_KIND kind, gpAXIS_SCALE axisType, wxString xlabel, wxString ylabel)
-        {
-            xUnitList[kind][axisType] = xlabel;
-            yUnitList[kind][axisType] = ylabel;
-        }
-        void SetAxisPopupLabel(gpAXIS_SCALE axisType, wxString xlabel, wxString ylabel)
-        {
-            popupGroupList[gpXAXIS].SetLabel( axisType, xlabel );
-            popupGroupList[gpYAXIS].SetLabel( axisType, ylabel );
-        }
+        void SetLabel(gpCHART_KIND kind, gpLabel_e flg, wxString lb);
+        void SetAxisUnitLabel(gpCHART_KIND kind, gpAXIS_SCALE axisType, wxString xlabel, wxString ylabel);
+        void SetAxisPopupLabel(gpAXIS_SCALE axisType, wxString xlabel, wxString ylabel);
+        void EnableMainPopup(gpCHART_KIND kind, bool enabled);
+        void EnablePopup( gpCHART_KIND kind, gpAXIS_SCALE axis, bool Xenabled, bool Yenabled);
+        bool IsChartTypeEnabled(gpCHART_KIND kind);
+        bool IsXPopupEnabled( gpCHART_KIND kind, gpAXIS_SCALE axis);
+        bool IsYPopupEnabled( gpCHART_KIND kind, gpAXIS_SCALE axis);
 
-        void EnableMainPopup(gpCHART_KIND kind, bool enabled)
-        {
-            popupGroupList[gpWINDOW].Enable(kind, enabled);
-        }
-        void EnablePopup( gpCHART_KIND kind, gpAXIS_SCALE axis, bool Xenabled, bool Yenabled)
-        {
-            popupGroupList[gpXAXIS].Enable(kind, axis, Xenabled);
-            popupGroupList[gpYAXIS].Enable(kind, axis, Yenabled);
-        }
-
-        bool IsChartTypeEnabled(gpCHART_KIND kind)
-        {
-            return popupGroupList[gpWINDOW].IsEnabled(kind);
-        }
-        bool IsXPopupEnabled( gpCHART_KIND kind, gpAXIS_SCALE axis)
-        {
-            return popupGroupList[gpXAXIS].IsEnabled(axis);
-        }
-        bool IsYPopupEnabled( gpCHART_KIND kind, gpAXIS_SCALE axis)
-        {
-            return popupGroupList[gpYAXIS].IsEnabled(axis);
-        }
-
-        wxString GetXAxisLabel(gpAXIS_SCALE type)
-        {
-            wxString label = xLabelList[gpChart_kind];
-            if( type == gpAXIS_CUSTOM )
-                label += _(" [X=") + m_customXFormula + _("]");
-            else if( ! xUnitList[gpChart_kind][type].IsEmpty() )
-                label += _(" [") + xUnitList[gpChart_kind][type] + _("]");
-            return label;
-        }
-
-        wxString GetYAxisLabel(gpAXIS_SCALE type)
-        {
-            wxString label = yLabelList[gpChart_kind];
-            if( type == gpAXIS_CUSTOM )
-                label += _(" [Y=") + m_customYFormula + _("]");
-            else if( ! yUnitList[gpChart_kind][type].IsEmpty() )
-                label += _(" [") + yUnitList[gpChart_kind][type] + _("]");
-            return label;
-        }
+        wxString GetXAxisLabel(gpAXIS_SCALE type);
+        wxString GetYAxisLabel(gpAXIS_SCALE type);
 
         /*wxString& GetUnitString(gpKindLabelList_t& list, int kind, int type)
         {
@@ -508,15 +390,7 @@ class gpLayer : public gpMenu, public wxToolTip
          *  Add new mpLayer to gpLayer
          *  @param layer mpLayer to be added
          */
-		bool AddLayer(mpLayer* layer)
-		{
-            if(LayerExist(layer)==false)
-            {
-                mpLayerList.push_back(layer);
-                return true;
-            }
-            return false;   //layer exist already!
-		}
+		bool AddLayer(mpLayer* layer);
 		/**
 		 *  Del layer.
 		 *  Be default mpWindow deconstructor delete object also
@@ -524,48 +398,22 @@ class gpLayer : public gpMenu, public wxToolTip
 		 *  @param alsoDeleteObject     true if wan't delete object
 		 *  @return true if layer founded and deleted
 		 */
-		bool DelLayer(mpLayer* layer, bool alsoDeleteObject = true)
-		{
-		    if(LayerExist(layer))
-		    {
-		        mpLayerList_t::iterator it = GetLayerIterator(layer);
-                mpLayerList.erase( it );
-                if(alsoDeleteObject)
-                {
-                    delete layer;
-                }
-		        return true;
-		    }
-		    return false;
-		}
+		bool DelLayer(mpLayer* layer, bool alsoDeleteObject = true);
 		/**
 		 *  Del all layers
 		 *  @param alsoDeleteObject     true if wan't delete object
 		 */
-		void DelAllLayers(bool alsoDeleteObjects = true )
-		{
-		    mpLayerList_t::iterator it;
-		    for(it = mpLayerList.begin(); it != mpLayerList.end(); it++)
-		    {
-		        DelLayer(*it, alsoDeleteObjects);
-		    }
-		}
+		void DelAllLayers(bool alsoDeleteObjects = true );
 		/**
 		 *  Get mpLayer by name
 		 *  @param name Name of mpLayer
 		 *  @return mpLayer pointer
 		 */
-		mpLayer* GetLayerByName(wxString name)
-		{
-		    mpLayerList_t::iterator it;
-            for(it= mpLayerList.begin(); it!=mpLayerList.end(); it++)
-                if( (*it)->GetName() == name) return *it;
-            return NULL;
-		}
+		mpLayer* GetLayerByName(wxString name);
 		/**
 		 *  @return mpLayerList_t*
 		 */
-		mpLayerList_t* GetLayerList(){return &mpLayerList;}
+		mpLayerList_t* GetLayerList();
 
 
 		/// @}
@@ -579,12 +427,7 @@ class gpLayer : public gpMenu, public wxToolTip
 		 *	@param group[out]	popupgroup for type
 		 *	@return true if foudn
 		 */
-		bool GetPopupGroup(int type, gpPopupGroup& group)
-		{
-		    if(popupGroupList.find(type)==popupGroupList.end())return false;
-		    group = popupGroupList[type];
-		    return true;
-		}
+		bool GetPopupGroup(int type, gpPopupGroup& group);
 		/**
 		*	Test if menu/popup id belongs to this gpLayer
 		*	Can detect which gpLayer is in use when
@@ -592,35 +435,26 @@ class gpLayer : public gpMenu, public wxToolTip
 		*	PopupGroup contains all wxMenuItems and those
 		*	contains its unique id. That why we can detect it.
 		*/
-		bool IdBelong(int id)
-		{
-		    gpPopupGroupList_t::iterator it;
-		    for(it=popupGroupList.begin(); it!= popupGroupList.end(); ++it)
-		    {
-		        if( it->second.IdBelong(id) ) return true;
-		    }
-		    if( MenuIdBelongs(id) ) return true;
-		    return false;
-		}
+		bool IdBelong(int id);
 
 
 		/** Function for Init gpLayers*/
 
 
-		virtual bool IsThereContinousLines()    { return false; }
-		virtual bool IsThereInfoLayer()         { return nfo?true:false; }
-		virtual bool IsThereMarkCorner()        { return false; }
+		virtual bool IsThereContinousLines();
+		virtual bool IsThereInfoLayer();
+		virtual bool IsThereMarkCorner();
 
-		virtual bool GetDefaultContinousLines() { return false; }
-		virtual bool GetDefaultShowInfoLayer()  { return nfo ? nfo->IsVisible() : false; }
-		virtual bool GetDefaultMarkCorners()    { return false; }
-
-
+		virtual bool GetDefaultContinousLines();
+		virtual bool GetDefaultShowInfoLayer();
+		virtual bool GetDefaultMarkCorners();
 
 
-		wxBitmap*   GetBitmap()      { return m_bitmap; }
-		void        SetBitmap( wxBitmap* bitmap) { m_bitmap = bitmap; }
-		void        SetBitmap( wxString filename) { m_bitmap = new wxBitmap(wxImage(filename)); }
+
+
+		wxBitmap*   GetBitmap();
+		void        SetBitmap( wxBitmap* bitmap);
+		void        SetBitmap( wxString filename);
 
     protected:
 
@@ -670,23 +504,13 @@ class gpLayer : public gpMenu, public wxToolTip
          *  @param layer
          *  @return true if exist
          */
-        bool LayerExist(mpLayer* layer)
-        {
-            if(GetLayerIterator(layer)!=mpLayerList.end())return true;
-            return false;
-        }
+        bool LayerExist(mpLayer* layer);
         /**
          *  Get Layer iterator by mpLayer
          *  @param layer    mpLayer*
          *  @return mpLayerList_t::iterator
          */
-        mpLayerList_t::iterator GetLayerIterator(mpLayer* layer)
-        {
-            mpLayerList_t::iterator it;
-            for(it= mpLayerList.begin(); it!=mpLayerList.end(); it++)
-                if( *it == layer) return it;
-            return mpLayerList.end();
-        }
+        mpLayerList_t::iterator GetLayerIterator(mpLayer* layer);
 };
 
 #endif

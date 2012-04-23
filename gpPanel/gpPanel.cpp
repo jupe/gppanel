@@ -29,14 +29,17 @@
 #include <wx/filename.h>
 #include <wx/choicdlg.h>
 #include <wx/arrstr.h>
+#include <wx/log.h>
+#include <wx/filedlg.h>
+#include <wx/textdlg.h>
 //(*IdInit(gpPanel)
 //*)
 
 #include <wx/file.h>
-#include "baseLayers/baseData.h"
+#include "baseData.h"
 
 #include <wx/tipwin.h>
-#include "gpPopup.h"
+#include "menu/gpPopup.h"
 
 
 BEGIN_EVENT_TABLE(gpPanel,wxPanel)

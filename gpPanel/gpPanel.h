@@ -95,18 +95,20 @@
 //Drag and drop
 #include <wx/dnd.h>
 #include <wx/clipbrd.h>
-
+#include <wx/sizer.h>
 
 #include <deque>
 #include <map>
 #include <string>
+
+
 #include "mathplot.h"   //used drawing library
-#include "baseLayers/gpLayer.h"
+#include "gpLayer.h"
 
 #define STDSTRING2WXSTRING(x)   (wxString(x.c_str(), wxConvUTF8))
 
-#include "gpMenu.h"
-#include "gpPopup.h"
+#include "menu/gpMenu.h"
+#include "menu/gpPopup.h"
 
 /**
 *   gpLayer_s stucture

@@ -24,6 +24,7 @@ gpPopupGroup::gpPopupGroup()
 {
 	m_submenu=0;
 	m_type=0;
+	it = m_popupList.begin();
 }
 
 gpPopupGroup::gpPopupGroup(int type, wxString label, wxString help)

@@ -15,9 +15,14 @@
 
 #include "gpMath.h"
 
-mean::mean(){}
+mean::mean()
+{
+    counter = 0;
+}
 
-mean::~mean(){}
+mean::~mean()
+{
+}
 
 bool mean::getNextXY(int & c, double & x, double & y)
 {

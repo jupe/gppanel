@@ -162,6 +162,8 @@ void gpLayer::LockChartX(bool b){ m_chartLockX = b; }
 void gpLayer::LockChartY(bool b){ m_chartLockY = b; }
 bool gpLayer::GetLockX(){ return m_chartLockX; }
 bool gpLayer::GetLockY(){ return m_chartLockY; }
+void gpLayer::SetGraphPosition(int pos) { m_graphPosition = pos; }
+int  gpLayer::GetGraphPosition() const  { return m_graphPosition; }
 void gpLayer::SetChartBounds(bool b){ m_chartBoundaryIsDefined=b; }
 void gpLayer::SetChartBounds( double xmin,
                               double xmax,
@@ -225,3 +227,297 @@ void gpLayer::GetBoundLocks( bool& xmin,
 }
 double gpLayer::GetZoomIncrementFactory() { return 1.2; }
 bool gpLayer::IsWindowScrollbarsEnabled() { return true; }
+
+
+
+void gpLayer::RefreshLabels()
+{
+	wxString label;
+
+	if(xaxis) xaxis->SetName( GetXAxisLabel(gpXaxis_type) );
+	if(yaxis) yaxis->SetName( GetYAxisLabel(gpYaxis_type) );
+
+	popupGroupList[gpYAXIS].Select(gpChart_kind);
+	popupGroupList[gpXAXIS].Select(gpChart_kind);
+
+}
+
+void gpLayer::SetXAxisType(int kind)
+{
+	//mpX_TIME/ mpX_NORMAL / mpX_HOUR
+	if(xaxis)xaxis->SetLabelMode(kind);
+}
+void gpLayer::SetSamplerate(double d){m_samplerate = d;}
+void gpLayer::SetFftLength(int i){m_fft_lenght = i;}
+
+
+bool gpLayer::RefreshNeeded() { return m_refreshNeeded; }
+
+void gpLayer::Refresh()
+{
+	m_refreshNeeded = false;
+	RefreshChart();
+	RefreshToolTip();
+	m_sameFormatAsPreviously = true;
+}
+
+bool gpLayer::GetVisibility()   		{ return m_visible; }
+void gpLayer::SetVisibility(bool visible){ m_visible = visible; }
+bool gpLayer::GetEnable()            	{ return m_enable; }
+void gpLayer::SetEnable(bool enabled)	{ m_enable = enabled; }
+mpScaleX* gpLayer::GetXAxis()			{ return xaxis; }
+mpScaleY* gpLayer::GetYAxis()			{ return yaxis; }
+
+void gpLayer::SetYXFormula(wxString yxformula)  { m_customYXFormula = yxformula; }
+void gpLayer::SetXFormula(wxString xformula) 	{ m_customXFormula = xformula; }
+void gpLayer::SetYFormula(wxString yformula) 	{ m_customYFormula = yformula; }
+bool gpLayer::IsYXFormula()						{ return m_customYXFormula.IsEmpty()?false:true; }
+bool gpLayer::IsXFormula()						{ return m_customXFormula.IsEmpty()?false:true; }
+bool gpLayer::IsYFormula()						{ return m_customYFormula.IsEmpty()?false:true; }
+wxString gpLayer::GetYXFormula() const			{ return m_customYXFormula; }
+wxString gpLayer::GetXFormula() const 			{ return m_customXFormula; }
+wxString gpLayer::GetYFormula() const 			{ return m_customYFormula; }
+
+void  gpLayer::ShowGrid(bool visibility, int mode)
+{
+	if(xaxis && (mode&gpXAXIS) )xaxis->SetTicks(visibility);
+	if(yaxis && (mode&gpYAXIS) )yaxis->SetTicks(visibility);
+}
+void gpLayer::ShowCornerMarkers(bool visibility) { }
+
+void gpLayer::SetContinousLine(bool continous) { };
+
+void gpLayer::ShowInfoLayer(bool visibility)
+{
+	if(nfo) nfo->SetVisible(visibility);
+}
+bool gpLayer::SelectXAxisScale(gpAXIS_SCALE type)
+{
+	//if(!IsXScaleSupported(type)) return false;
+	if(!IsXPopupEnabled(gpChart_kind, type)) return false;
+	gpXaxis_type = type;
+	m_sameFormatAsPreviously = false;
+	Refresh();
+	RefreshLabels();
+
+	return true;
+}
+
+bool gpLayer::SelectYAxisScale(gpAXIS_SCALE type)
+{
+	//if(!IsYScaleSupported(type)) return false;
+	if(!IsYPopupEnabled(gpChart_kind, type)) return false;
+	gpYaxis_type = type;
+	m_sameFormatAsPreviously = false;
+	Refresh();
+	RefreshLabels();
+	return true;
+}
+
+bool gpLayer::SetChartKind(gpCHART_KIND kind)
+{
+	//if(!IsSupported(kind))  return false;
+	if(!IsChartTypeEnabled(kind))  return false;
+	gpChart_kind = kind;
+
+	gpYaxis_type = gpAXIS_DEFAULT;
+	gpXaxis_type = gpAXIS_DEFAULT;
+
+	m_sameFormatAsPreviously = false;
+	RefreshChart();
+	RefreshLabels();
+
+	//last refresh tooltip for current view
+	/// @note maybe there is case, when tooltip
+	///       don't want refresh to this kind of chart view...
+	///       example with fft, wan't show tips before fft..
+	RefreshToolTip();
+	return true;
+}
+
+
+void gpLayer::SetLabel(gpCHART_KIND kind, gpLabel_e flg, wxString lb)
+{
+	switch(flg)
+	{
+		default:
+		case(gpLABEL):      LabelList[kind]=lb; break;
+		case(gpLABEL_X):    xLabelList[kind]=lb; break;
+		case(gpLABEL_Y):    yLabelList[kind]=lb; break;
+	}
+}
+void gpLayer::SetAxisUnitLabel(gpCHART_KIND kind, gpAXIS_SCALE axisType, wxString xlabel, wxString ylabel)
+{
+	xUnitList[kind][axisType] = xlabel;
+	yUnitList[kind][axisType] = ylabel;
+}
+void gpLayer::SetAxisPopupLabel(gpAXIS_SCALE axisType, wxString xlabel, wxString ylabel)
+{
+	popupGroupList[gpXAXIS].SetLabel( axisType, xlabel );
+	popupGroupList[gpYAXIS].SetLabel( axisType, ylabel );
+}
+
+void gpLayer::EnableMainPopup(gpCHART_KIND kind, bool enabled)
+{
+	popupGroupList[gpWINDOW].Enable(kind, enabled);
+}
+void gpLayer::EnablePopup( gpCHART_KIND kind, gpAXIS_SCALE axis, bool Xenabled, bool Yenabled)
+{
+	popupGroupList[gpXAXIS].Enable(kind, axis, Xenabled);
+	popupGroupList[gpYAXIS].Enable(kind, axis, Yenabled);
+}
+
+bool gpLayer::IsChartTypeEnabled(gpCHART_KIND kind)
+{
+	return popupGroupList[gpWINDOW].IsEnabled(kind);
+}
+bool gpLayer::IsXPopupEnabled( gpCHART_KIND kind, gpAXIS_SCALE axis)
+{
+	return popupGroupList[gpXAXIS].IsEnabled(axis);
+}
+bool gpLayer::IsYPopupEnabled( gpCHART_KIND kind, gpAXIS_SCALE axis)
+{
+	return popupGroupList[gpYAXIS].IsEnabled(axis);
+}
+
+wxString gpLayer::GetXAxisLabel(gpAXIS_SCALE type)
+{
+	wxString label = xLabelList[gpChart_kind];
+	if( type == gpAXIS_CUSTOM )
+		label += _(" [X=") + m_customXFormula + _("]");
+	else if( ! xUnitList[gpChart_kind][type].IsEmpty() )
+		label += _(" [") + xUnitList[gpChart_kind][type] + _("]");
+	return label;
+}
+
+wxString gpLayer::GetYAxisLabel(gpAXIS_SCALE type)
+{
+	wxString label = yLabelList[gpChart_kind];
+	if( type == gpAXIS_CUSTOM )
+		label += _(" [Y=") + m_customYFormula + _("]");
+	else if( ! yUnitList[gpChart_kind][type].IsEmpty() )
+		label += _(" [") + yUnitList[gpChart_kind][type] + _("]");
+	return label;
+}
+
+/*wxString& gpLayer::GetUnitString(gpKindLabelList_t& list, int kind, int type)
+{
+	return list[kind][type];
+	wxString label;
+	gpKindLabelList_t::iterator ret;
+	gpLabelList_t::iterator it;
+	ret = list.find(kind);
+	if( ret!=list.end() ){
+		it = ret->second.find(type);
+		if( it != ret->second.end() ) {
+			if( !it->second.IsEmpty() )
+				return &(*it);
+		}
+	}
+	return 0;
+}*/
+
+/* BASIC FUNCTION FOR HANDLE mpLayers */
+
+
+bool gpLayer::AddLayer(mpLayer* layer)
+{
+	if(LayerExist(layer)==false)
+	{
+		mpLayerList.push_back(layer);
+		return true;
+	}
+	return false;   //layer exist already!
+}
+
+bool gpLayer::DelLayer(mpLayer* layer, bool alsoDeleteObject)
+{
+	if(LayerExist(layer))
+	{
+		mpLayerList_t::iterator it = GetLayerIterator(layer);
+		mpLayerList.erase( it );
+		if(alsoDeleteObject)
+		{
+			delete layer;
+		}
+		return true;
+	}
+	return false;
+}
+
+void gpLayer::DelAllLayers(bool alsoDeleteObjects )
+{
+	mpLayerList_t::iterator it;
+	for(it = mpLayerList.begin(); it != mpLayerList.end(); it++)
+	{
+		DelLayer(*it, alsoDeleteObjects);
+	}
+}
+
+mpLayer* gpLayer::GetLayerByName(wxString name)
+{
+	mpLayerList_t::iterator it;
+	for(it= mpLayerList.begin(); it!=mpLayerList.end(); it++)
+		if( (*it)->GetName() == name) return *it;
+	return NULL;
+}
+
+mpLayerList_t* gpLayer::GetLayerList(){return &mpLayerList;}
+
+
+
+/* FUNCTION FOR HANDLE POPUP GROUPS */
+
+bool gpLayer::GetPopupGroup(int type, gpPopupGroup& group)
+{
+	if(popupGroupList.find(type)==popupGroupList.end())return false;
+	group = popupGroupList[type];
+	return true;
+}
+
+bool gpLayer::IdBelong(int id)
+{
+	gpPopupGroupList_t::iterator it;
+	for(it=popupGroupList.begin(); it!= popupGroupList.end(); ++it)
+	{
+		if( it->second.IdBelong(id) ) return true;
+	}
+	if( MenuIdBelongs(id) ) return true;
+	return false;
+}
+
+
+/* Function for Init gpLayers*/
+
+bool gpLayer::IsThereContinousLines()    { return false; }
+bool gpLayer::IsThereInfoLayer()         { return nfo?true:false; }
+bool gpLayer::IsThereMarkCorner()        { return false; }
+
+bool gpLayer::GetDefaultContinousLines() { return false; }
+bool gpLayer::GetDefaultShowInfoLayer()  { return nfo ? nfo->IsVisible() : false; }
+bool gpLayer::GetDefaultMarkCorners()    { return false; }
+
+
+
+
+wxBitmap*   gpLayer::GetBitmap()      				{ return m_bitmap; }
+void        gpLayer::SetBitmap( wxBitmap* bitmap) 	{ m_bitmap = bitmap; }
+void        gpLayer::SetBitmap( wxString filename) 	{ m_bitmap = new wxBitmap(wxImage(filename)); }
+
+
+/* PRIVATE */
+
+bool gpLayer::LayerExist(mpLayer* layer)
+{
+	if(GetLayerIterator(layer)!=mpLayerList.end())return true;
+	return false;
+}
+mpLayerList_t::iterator gpLayer::GetLayerIterator(mpLayer* layer)
+{
+	mpLayerList_t::iterator it;
+	for(it= mpLayerList.begin(); it!=mpLayerList.end(); it++)
+		if( *it == layer) return it;
+	return mpLayerList.end();
+}
+
+
