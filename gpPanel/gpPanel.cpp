@@ -16,7 +16,6 @@
  *
  */
 
-#include "wx_pch.h"
 #include "gpPanel.h"
 
 #ifndef WX_PRECOMP

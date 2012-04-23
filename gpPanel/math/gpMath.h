@@ -65,9 +65,9 @@ class mean
     public:
 
 		/** Default constructor*/
-        mean(){}
+        mean();
 		/** Default destructor*/
-        virtual ~mean(){}
+        virtual ~mean();
 		/**
 		*	Virtual function to get next XY from data.
 		*	@note Must be impelmented!
@@ -90,210 +90,58 @@ class mean
 		*	@param y	Y value
 		*	@return	true if found next
 		*/
-        bool getNextXY(int & c, double & x, double & y)
-        {
-            if(getNextXY(x, y)){
-                c = ++counter;
-                return true;
-            }
-            return false;
-        }
+        bool getNextXY(int & c, double & x, double & y);
+
 		/** Reset private index + virtual iterator */
-        void reset()
-        {
-            resetI();
-            counter = 0;
-        }
+        void reset();
+
     public:
 
-        #define getAverage(x)	getArithmeticMean(x)	//!< Get basic average value
-
 		/**	@return get arithmetic mean	*/
-        double getArithmeticMean()
-        {
-            double x = 0, y = 0, sum = 0;
-            int n = 0;
-            reset();
-            while(getNextXY(n, x, y))
-            {
-                sum += y;
-            }
-            return sum/ (double)n;
-        }
+        double getArithmeticMean();
+        /** @return Get basic average value */
+		double getAverage();
+
 		/**	@return get geometric mean	*/
-        double getGeometricMean()
-        {
-            double x = 0, y = 0;
-            long double p=1;
-            int n = 0;
-            reset();
-            while(getNextXY(n, x, y))
-            {
-                p *= y;
-            }
-            return pow(p, (1.0/(double)n) );
-        }
+        double getGeometricMean();
+
 		/**	@return get harmonic mean	*/
-        double getHarmonicMean()
-        {
-            double x = 0, y = 0, d=0;
-            int n = 0;
-            reset();
-            while(getNextXY(n, x, y))
-            {
-                d += (1.0/y);
-            }
-            return (double)n / d;
-        }
+        double getHarmonicMean();
+
 		/**	@return get weighted mean
 		*	@param	w 	weight values in map (index->weight)
 		*/
-        double getWeightedMean(map<int, double> & w)
-        {
-            double x, y, d=0, wsize = (double)w.size();
-            int n;
-            reset();
-            while(getNextXY(n, x, y))
-            {
-                if(wsize >=n)return -1;
-                d += y*w[n];
-            }
-            return d/(double)n;
-        }
+        double getWeightedMean(map<int, double> & w);
+
 		/**	@return get quadratic mean	*/
-        double getQuadraticMean() //RMS
-        {
-            double x = 0, y = 0, s=0;
-            int n = 0;
-            reset();
-            while(getNextXY(n, x, y))
-            {
-                s += y*y;
-            }
-            return pow(s/(double)n, 0.5);
-        }
+        double getQuadraticMean(); //RMS
 		/**
 		*	@param e	X or Y midrange
 		*	@return get midrage mean
 		*/
-        double getMidrange(midrange e = X)
-        {
-            double max=0, min=0, x=0, y=0, k=0;
-            bool first=true;
-            reset();
-            while(getNextXY(x, y))
-            {
-                switch(e){
-                    default:
-                    case(X):k=x;break;
-                    case(Y):k=y;break;
-                }
-                if(first){
-                    min = max = k;
-                    first=false;
-                }
-                if(k > max) max = k;
-                if(k < min) min = k;
-            }
-            return (max-min)/2.0;
-        }
+        double getMidrange(midrange e = X);
 		/**
 		*   sigma = sqrt[ SUM( x - 'x ) ^2 / (n-1) ]
 		*   @return Get standard deviation
 		*/
-        double getStandardDeviation()
-        {
-            double m, x, y, t=0;
-            int n=0;
-            m= getArithmeticMean();
-            reset();
-            while(getNextXY(n, x, y))
-            {
-                t += pow((y-m), 2);
-            }
-
-            return pow( t / ((double)n-1.0) , 0.5);
-        }
+        double getStandardDeviation();
 		/**
 		*	Get average absolute deviation by parameters.
 		*	modes: MEAN, MEDIAN, MODE
 		*	@param e	mode of deviation
 		*	@param mode	special value
 		*/
-        double getAverageAbsoluteDeviation(averageAbsoluteDeviation e = MEAN, double mode = 0)
-        {
-            double m,x,y,s=0;
-            int n = 0;
-            switch(e)
-            {
-                default:
-                case(MEAN):
-                    m = getArithmeticMean();
-                    break;
-                case(MEDIAN):
-                    m = getMedian();
-                    break;
-                case(MODE):
-                    m = mode;
-                    break;
-            }
-            reset();
-            while(getNextXY(n, x, y))
-            {
-                s += fabs(y-m);
-            }
-            return s/(double)n;
-        }
+        double getAverageAbsoluteDeviation(averageAbsoluteDeviation e = MEAN, double mode = 0);
 		/** @return Get median */
-        double getMedian()
-        {
-            //{2,3,4,1,45} = 4
-            double x = 0, y = 0;
-            int n = 0, c = 0;
-            reset();
-            while(getNextXY(n, x, y));
-            c=n/2+1;
-            reset();
-            while(getNextXY(n, x, y))if(n==c)break;
-            return y;
-        }
+        double getMedian();
 		/** @return Get datatable size */
-        int getSize()
-        {
-            double x, y;
-            int n = 0;
-            reset();
-            while(getNextXY(n, x, y));
-            return n;
-        }
+        int getSize();
 		/** @return Get accumulative Y */
-        double getAccumulativeY()
-        {
-
-            double x, y, ysum=0;
-            int n;
-            reset();
-            while(getNextXY(n, x, y))ysum+=y;
-            return ysum;
-        }
+        double getAccumulativeY();
 		/** @return Get Y sum */
-        double getYsum()
-        {
-            double x, y, ysum=0;
-            int n;
-            reset();
-            while(getNextXY(n, x, y))ysum+=y;
-            return ysum;
-        }
+        double getYsum();
 		/** @return Get X sum */
-        double getXsum()
-        {
-            double x, y, xsum=0;
-            int n;
-            reset();
-            while(getNextXY(n, x, y))xsum+=x;
-            return xsum;
-        }
+        double getXsum();
 
 };	//class mean
 
@@ -306,9 +154,9 @@ class gpMath : public mean
 {
     public:
 		/** Default constructor */
-        gpMath(){}
+        gpMath();
 		/** Default destructor */
-        virtual ~gpMath(){}
+        virtual ~gpMath();
 };
 
 
