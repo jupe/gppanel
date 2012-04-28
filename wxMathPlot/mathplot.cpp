@@ -190,7 +190,7 @@ void mpInfoLayer::UpdateReference()
     m_reference.y = m_dim.y;
 }
 
-void   mpInfoLayer::Plot(wxDC & dc, mpWindow & w)
+void mpInfoLayer::Plot(wxDC & dc, mpWindow & w)
 {
     if (m_visible) {
         // Adjust relative position inside the window
@@ -1154,6 +1154,9 @@ mpFX::mpFX(wxString name, int flags)
     SetName(name);
     m_flags = flags;
     m_type = mpLAYER_PLOT;
+    m_markCorners = false;
+    m_drawOutsideMargins = false;
+    m_cornerMarkSize = 3;
 }
 
 void mpFX::Plot(wxDC & dc, mpWindow & w)
@@ -1174,7 +1177,15 @@ void mpFX::Plot(wxDC & dc, mpWindow & w)
 				iy = w.y2p( GetY(w.p2x(i)));
 				// Draw the point only if you can draw outside margins or if the point is inside margins
 				if (m_drawOutsideMargins || ((iy >= minYpx) && (iy <= maxYpx)))
-					dc.DrawPoint(i, iy );// (wxCoord) ((w.GetPosY() - GetY( (double)i / w.GetScaleX() + w.GetPosX()) ) * w.GetScaleY()));
+                {
+                    dc.DrawPoint(i, iy );// (wxCoord) ((w.GetPosY() - GetY( (double)i / w.GetScaleX() + w.GetPosX()) ) * w.GetScaleY()));
+					//dc.DrawLine( i, iy, i, iy);
+					if(m_markCorners)
+                    {
+                        dc.DrawCircle(i, iy, m_cornerMarkSize);
+                    }
+                }
+
 			}
 		}
 		else
@@ -1184,7 +1195,15 @@ void mpFX::Plot(wxDC & dc, mpWindow & w)
 				iy = w.y2p( GetY(w.p2x(i)));
 				// Draw the point only if you can draw outside margins or if the point is inside margins
 				if (m_drawOutsideMargins || ((iy >= minYpx) && (iy <= maxYpx)))
-					dc.DrawLine( i, iy, i, iy);
+                {
+                    dc.DrawPoint(i, iy );
+                    //dc.DrawLine( i, iy, i, iy);
+					if(m_markCorners)
+                    {
+                        dc.DrawCircle(i, iy, m_cornerMarkSize);
+                    }
+                }
+
 	//             wxCoord c = w.y2p( GetY(w.p2x(i)) ); //(wxCoord) ((w.GetPosY() - GetY( (double)i / w.GetScaleX() + w.GetPosX()) ) * w.GetScaleY());
 
 			}
@@ -1214,6 +1233,7 @@ void mpFX::Plot(wxDC & dc, mpWindow & w)
 		}
 	}
 }
+void mpFX::MarkCorners(bool t){m_markCorners = t;}
 
 IMPLEMENT_ABSTRACT_CLASS(mpFY, mpLayer)
 
@@ -1242,7 +1262,10 @@ void mpFY::Plot(wxDC & dc, mpWindow & w)
 			{
 				ix = w.x2p(GetX(w.p2y(i)));
 				if (m_drawOutsideMargins || ((ix >= startPx) && (ix <= endPx)))
-					dc.DrawPoint(ix, i);
+                {
+                    dc.DrawPoint(ix, i);
+                }
+
 			}
 		}
 		else
@@ -1251,7 +1274,10 @@ void mpFY::Plot(wxDC & dc, mpWindow & w)
 			{
 				ix = w.x2p(GetX(w.p2y(i)));
 				if (m_drawOutsideMargins || ((ix >= startPx) && (ix <= endPx)))
-					dc.DrawLine(ix, i, ix, i);
+                {
+                    //dc.DrawLine(ix, i, ix, i);
+					dc.DrawPoint(ix, i);
+                }
 	//             wxCoord c =  w.x2p(GetX(w.p2y(i))); //(wxCoord) ((GetX( (double)i / w.GetScaleY() + w.GetPosY()) - w.GetPosX()) * w.GetScaleX());
 	//             dc.DrawLine(c, i, c, i);
 			}
@@ -1338,6 +1364,10 @@ bool mpFXY::GetNearestCoord(mpWindow & w, double & x, double & y)
 
     }
     return false;
+}
+void mpFXY::MarkCorners(bool t)
+{
+    m_markCorners = t;
 }
 void mpFXY::Plot(wxDC & dc, mpWindow & w)
 {
@@ -1437,7 +1467,8 @@ void mpFXY::Plot(wxDC & dc, mpWindow & w)
 		{
 			// Old code
 			wxCoord x0=0,c0=0,
-                    *nextX0=0;
+                    *nextX0=0,
+                    *nextY0=0;
 			bool    first = TRUE;
 			while (GetNextXY(x, y))
 			{
@@ -1450,7 +1481,7 @@ void mpFXY::Plot(wxDC & dc, mpWindow & w)
 				}
 				bool outUp, outDown;
 				if( (x1 >= startPx) && (x0 <= endPx)) {
-					outDown = (c0 > maxYpx) && (c1 > maxYpx);
+					outDown = (c0 > maxYpx) && (c1 > maxYpx);   // check that at least one of point is inside borders
 					outUp = (c0 < minYpx) && (c1 < minYpx);
 					if (!outUp && !outDown) {
 
@@ -1468,21 +1499,18 @@ void mpFXY::Plot(wxDC & dc, mpWindow & w)
                                 c0 = maxYpx;
                             }
                             if (c1 < minYpx) {  //y1 > minY
-                                nextX0 = new wxCoord(x1);
+                                nextX0 = new wxCoord(x1);   //Save x1 value because it needed for next loop!
+                                nextY0 = new wxCoord(c1);   //Save y1 value because it needed for next loop!
                                 x1 = (int)(((double)(minYpx - c0))/((double)(c1 - c0))*(x1-x0)) + x0;
                                 c1 = minYpx;
                             }
-                            /*if (c1 > maxYpx) { //y1 > maxY
+                            if (c1 > maxYpx) { //y1 > maxY
+                                nextX0 = new wxCoord(x1);   //Save x1 value because it needed for next loop!
+                                nextY0 = new wxCoord(c1);   //Save y1 value because it needed for next loop!
 
-                                nextX0 = new wxCoord( x1 );
-                                //int dx = x1-x0,
-                                //    dy = c0-c1;
-                                //x0 +=  dx- (dx - (int)((float)(maxYpx-c0) * ((float)dx/(float)dy)) );
-
-                                x1 = (int)(((float)(maxYpx - c0))/((float)(c1 - c0))*(x1-x0)) + x0;
-                                //wxLogDebug(wxT("old x0 = %d, old x1 = %d, new x1 = %d, c0 = %d, c1 = %d, maxYpx = %d"), x0, x1, newX1, c0, c1, maxYpx);
+                                x1 = (int)(((double)(maxYpx - c0))/((double)(c1 - c0))*(x1-x0)) + x0;
                                 c1 = maxYpx;
-                            }*/
+                            }
 
                         }
 
@@ -1509,6 +1537,7 @@ void mpFXY::Plot(wxDC & dc, mpWindow & w)
 				}
 				x0=x1; c0=c1;
 				if(nextX0){x0 = *nextX0; wxDELETE(nextX0);}
+				if(nextY0){c0 = *nextY0; wxDELETE(nextY0);}
 			}
 		}
 
@@ -1860,6 +1889,11 @@ void mpScaleX::Plot(wxDC & dc, mpWindow & w)
         }
     }; */
 }
+bool mpScaleX::HasBBox()            { return false; }
+bool mpScaleX::IsScaleXLayer()      { return true;  }
+void mpScaleX::SetAlign(int align)  { m_flags = align; }
+void mpScaleX::SetTicks(bool ticks) { m_ticks = ticks; }
+bool mpScaleX::GetTicks()           { return m_ticks; }
 
 IMPLEMENT_DYNAMIC_CLASS(mpScaleY, mpLayer)
 
@@ -2098,8 +2132,8 @@ BEGIN_EVENT_TABLE(mpWindow, wxWindow)
 END_EVENT_TABLE()
 
 mpWindow::mpWindow(){}
-mpWindow::mpWindow( wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, long flag )
-    : wxWindow( parent, id, pos, size, flag, wxT("mathplot") )
+mpWindow::mpWindow( wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, long flag, const wxString& name )
+    : wxWindow( parent, id, pos, size, flag, name )
 {
     m_scaleX = m_scaleY = 1.0;
     m_posX   = m_posY   = 0;
@@ -3564,7 +3598,7 @@ mpLayer* mpWindow::GetLayer(int position)
     return m_layers[position];
 }
 
-mpLayer* mpWindow::GetLayerByName( const wxString &name)
+mpLayer* mpWindow::GetLayer( const wxString &name)
 {
     for (wxLayerList::iterator it=m_layers.begin();it!=m_layers.end();it++)
         if (! (*it)->GetName().Cmp( name ) )
@@ -3706,7 +3740,7 @@ mpPointLayer* mpWindow::IsInsidePointLayer(wxPoint& point)
 }
 void mpWindow::SetLayerVisible(const wxString &name, bool viewable)
 {
-	mpLayer* lx = GetLayerByName(name);
+	mpLayer* lx = GetLayer(name);
 	if ( lx ) {
 		lx->SetVisible(viewable);
 		UpdateAll();
@@ -3715,7 +3749,7 @@ void mpWindow::SetLayerVisible(const wxString &name, bool viewable)
 
 bool mpWindow::IsLayerVisible(const wxString &name )
 {
-	mpLayer* lx = GetLayerByName(name);
+	mpLayer* lx = GetLayer(name);
 	return (lx) ? lx->IsVisible() : false;
 }
 

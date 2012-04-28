@@ -885,8 +885,12 @@ public:
     */
     virtual void Plot(wxDC & dc, mpWindow & w);
 
+    void MarkCorners(bool t);
+
 protected:
-    int m_flags; //!< Holds label alignment
+    int m_flags;            //!< Holds label alignment
+    bool m_markCorners;     //!< Mark the curve corners
+    wxCoord m_cornerMarkSize;
 
     DECLARE_DYNAMIC_CLASS(mpFX)
 };
@@ -949,11 +953,17 @@ public:
         @param y Returns Y value
     */
     virtual bool GetNextXY(double & x, double & y) = 0;
-
+    /** Find nearest coordinate according arguments
+        @param w mpWindow instance
+        @param x x point in curve
+        @param y y point in curve
+        return true if found any
+    */
     virtual bool GetNearestCoord(mpWindow & w, double & x, double & y);
-
-    void MarkCorners(bool t){m_markCorners = t;}
-
+    /**  Mark corners to curve
+         @param t true/false
+    */
+    void MarkCorners(bool t = true);
     /** Layer plot handler.
         This implementation will plot the locus in the visible area and
         put a label according to the aligment specified.
@@ -961,8 +971,8 @@ public:
     virtual void Plot(wxDC & dc, mpWindow & w);
 
 protected:
-    int m_flags; //!< Holds label alignment
-    bool m_markCorners; //!< Mark the curve corners
+    int m_flags;                //!< Holds label alignment
+    bool m_markCorners;         //!< Mark the curve corners
     wxCoord m_cornerMarkSize;
 
 	// Data to calculate label positioning
@@ -1042,21 +1052,21 @@ public:
         This implementation returns \a FALSE thus making the ruler invisible
         to the plot layer bounding box calculation by mpWindow.
     */
-    virtual bool HasBBox() { return FALSE; }
-
-    virtual bool IsScaleXLayer(){return true;}
+    virtual bool HasBBox();
+    /** Virtual function for @return true because this is xscaler*/
+    virtual bool IsScaleXLayer();
 
     /** Set X axis alignment.
         @param align alignment (choose between mpALIGN_BORDER_BOTTOM, mpALIGN_BOTTOM, mpALIGN_CENTER, mpALIGN_TOP, mpALIGN_BORDER_TOP */
-    void SetAlign(int align) { m_flags = align; };
+    void SetAlign(int align);
 
     /** Set X axis ticks or grid
         @param ticks TRUE to plot axis ticks, FALSE to plot grid. */
-    void SetTicks(bool ticks) { m_ticks = ticks; };
+    void SetTicks(bool ticks);
 
     /** Get X axis ticks or grid
         @return TRUE if plot is drawing axis ticks, FALSE if the grid is active. */
-    bool GetTicks() { return m_ticks; };
+    bool GetTicks();
 
     /** Get X axis label colour of the text.
         @return the current wxColour of the ticks labels */
@@ -1226,7 +1236,7 @@ public:
     mpWindow( wxWindow *parent, wxWindowID id,
                      const wxPoint &pos = wxDefaultPosition,
                      const wxSize &size = wxDefaultSize,
-                     long flags = 0);
+                     long flags = 0, const wxString& name = wxT("mathplot"));
     virtual ~mpWindow();
 
     /** Init popup menu.
@@ -1276,7 +1286,7 @@ public:
         @param name The name of the layer to retrieve
         @return A pointer to the mpLayer object, or NULL if not found.
     */
-    mpLayer* GetLayerByName( const wxString &name);
+    mpLayer* GetLayer( const wxString &name);
 
     /**
     *   CHange drawing order of layer.
