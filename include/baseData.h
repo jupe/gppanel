@@ -40,10 +40,10 @@ using std::pair;
 using std::vector;
 
 
-#include "math/gpMath.h"
-#include "math/gpFormula.h"
-#include "math/Fourier.h"
-#include "../wxMathPlot/mathplot.h"
+#include "gpMath.h"
+#include "gpFormula.h"
+#include "Fourier.h"
+#include "mathplot.h"
 
 //This possible to handle a lot of data quicker
 //plot just second 1000 point to display..

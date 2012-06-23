@@ -15,8 +15,8 @@
 #ifndef LINELAYER_H
 #define LINELAYER_H
 
-#include "baseLayers/gpLayer.h"
-#include "baseLayers/baseData.h"
+#include "gpLayer.h"
+#include "baseData.h"
 
 #ifdef THIS_LAYER_TYPE
 #undef THIS_LAYER_TYPE

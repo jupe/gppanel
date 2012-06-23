@@ -23,9 +23,9 @@
 #include <map>
 #include <wx/tooltip.h>     //Hereditary class for menus
 #include "mathplot.h"       //wxMathPlot
-#include "menu/gpMenu.h" //Hereditary class for menus
-#include "menu/gpPopupGroup.h"
-#include "math/symbols.h"   //contains all math basic symbols
+#include "gpMenu.h" //Hereditary class for menus
+#include "gpPopupGroup.h"
+#include "symbols.h"   //contains all math basic symbols
 
 
 /**

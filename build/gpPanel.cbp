@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="gpPanel" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="..\lib\libgpPanel" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj\Debug\" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-D__WXDEBUG__" />
+					<Add directory="$(#wx)\lib\gcc_lib\mswud" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="..\lib\libgpPanel" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj\Release\" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-Wall" />
+					<Add directory="$(#wx)\lib\gcc_lib\mswu" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-D__GNUWIN32__" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add directory="$(#wx)\include" />
+			<Add directory="$(#wx)\contrib\include" />
+			<Add directory="..\include" />
+		</Compiler>
+		<Unit filename="..\gpPanel\baseData.cpp" />
+		<Unit filename="..\gpPanel\baseData.h" />
+		<Unit filename="..\gpPanel\gpLayer.cpp" />
+		<Unit filename="..\gpPanel\gpPanel.cpp" />
+		<Unit filename="..\gpPanel\lineLayer.h" />
+		<Unit filename="..\gpPanel\math\Fourier.cpp" />
+		<Unit filename="..\gpPanel\math\Fourier.h" />
+		<Unit filename="..\gpPanel\math\Fourier.inline.h" />
+		<Unit filename="..\gpPanel\math\gpFormula.cpp" />
+		<Unit filename="..\gpPanel\math\gpMath.cpp" />
+		<Unit filename="..\gpPanel\math\symbols.h" />
+		<Unit filename="..\gpPanel\mathplot.cpp" />
+		<Unit filename="..\gpPanel\mathplot.h" />
+		<Unit filename="..\gpPanel\menu\gpMenu.cpp" />
+		<Unit filename="..\gpPanel\menu\gpMenuGroup.cpp" />
+		<Unit filename="..\gpPanel\menu\gpPopup.cpp" />
+		<Unit filename="..\gpPanel\menu\gpPopupGroup.cpp" />
+		<Unit filename="..\include\gpFormula.h" />
+		<Unit filename="..\include\gpLayer.h" />
+		<Unit filename="..\include\gpMath.h" />
+		<Unit filename="..\include\gpMenu.h" />
+		<Unit filename="..\include\gpMenuGroup.h" />
+		<Unit filename="..\include\gpPanel.h" />
+		<Unit filename="..\include\gpPopup.h" />
+		<Unit filename="..\include\gpPopupGroup.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

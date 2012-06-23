@@ -107,8 +107,8 @@
 
 #define STDSTRING2WXSTRING(x)   (wxString(x.c_str(), wxConvUTF8))
 
-#include "menu/gpMenu.h"
-#include "menu/gpPopup.h"
+#include "gpMenu.h"
+#include "gpPopup.h"
 
 /**
 *   gpLayer_s stucture

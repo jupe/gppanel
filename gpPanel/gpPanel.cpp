@@ -39,7 +39,7 @@
 #include "baseData.h"
 
 #include <wx/tipwin.h>
-#include "menu/gpPopup.h"
+#include "gpPopup.h"
 
 
 BEGIN_EVENT_TABLE(gpPanel,wxPanel)
