@@ -6,10 +6,10 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
-				<Option output="..\lib\libgpPanel" prefix_auto="1" extension_auto="1" />
+			<Target title="win_slib_debug">
+				<Option output="..\lib\win\dgpPanel" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj\Debug\" />
+				<Option object_output="obj\win\Debug\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -17,29 +17,51 @@
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-D__WXDEBUG__" />
+					<Add option="-D__GNUWIN32__" />
+					<Add option="-D__WXMSW__" />
 					<Add directory="$(#wx)\lib\gcc_lib\mswud" />
 				</Compiler>
 			</Target>
-			<Target title="Release">
-				<Option output="..\lib\libgpPanel" prefix_auto="1" extension_auto="1" />
+			<Target title="win_slib_release">
+				<Option output="..\lib\win\gpPanel" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="obj\Release\" />
+				<Option object_output="obj\win\Release\" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
 				<Compiler>
 					<Add option="-O2" />
 					<Add option="-Wall" />
+					<Add option="-D__GNUWIN32__" />
+					<Add option="-D__WXMSW__" />
 					<Add directory="$(#wx)\lib\gcc_lib\mswu" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
 				</Linker>
 			</Target>
+			<Target title="win_dlib_release">
+				<Option output="..\lib\win\gpPanel" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj\win\Release\" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-O" />
+					<Add option="-Wall" />
+					<Add option="-shared" />
+					<Add option="-D__GNUWIN32__" />
+					<Add option="-D__WXMSW__" />
+				</Compiler>
+				<Linker>
+					<Add library="C:\SourceCode\Libraries\wxWidgets2.8\lib\gcc_dll\libwxbase28u.a" />
+					<Add library="C:\SourceCode\Libraries\wxWidgets2.8\lib\gcc_dll\libwxmsw28_core.a" />
+				</Linker>
+			</Target>
 		</Build>
 		<Compiler>
-			<Add option="-D__GNUWIN32__" />
-			<Add option="-D__WXMSW__" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#wx)\include" />
 			<Add directory="$(#wx)\contrib\include" />
