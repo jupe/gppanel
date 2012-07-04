@@ -2,12 +2,12 @@
  *	@file		gpPanel.cpp
  *	@author     Jussi Vatjus-Anttila
  *	@date		10.09.2009
- *	@version	0.1
+ *	@version	0.2
  *
  *  Purpose:         gpPanel implementation file.
  *  Original Author: Jussi Vatjus-Anttila
  *  Created:         10/09/2009
- *  Last edit:       21/04/2012
+ *  Last edit:       04/07/2012
  *  Copyright:       (c) Jussi Vatjus-Anttila
  *  Licence:         wxWindows Library License v3.1
  *
@@ -55,12 +55,11 @@ gpPanel::gpPanel(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize&
     //*)
     //m_BoxSizer = new wxBoxSizer(wxVERTICAL);
 
-    //SetAutoLayout( TRUE );
+    SetAutoLayout( TRUE );
     //SetSizer(m_BoxSizer);
     gpSizer::SetParent(this);
     //AttachGpSizer();
     SetSizerAndFit( gpSizer::GetSizer() );
-             //AttachGpSizer(this);
 
     // BoxSizer destructor is called when gpPanel destroyed
     // http://docs.wxwidgets.org/2.6.3/wx_wxsizer.html#wxsizerremove
@@ -130,7 +129,7 @@ int gpPanel::AddLayer(gpLayer *layer)
     mpWindow* newMp;
     /*bool ok = */AddLayer(layer, newMp);
     int id = AddWindow(newMp);
-    //gpSizer::Realize();
+    gpSizer::Realize();
 
     //restorePanelSize();
 
@@ -175,8 +174,9 @@ void gpPanel::DelAllLayers(bool alsoDeleteObjects)
 {
     gpLayerList_t::iterator it;
     for(it = m_gpLayerList.begin(); it != m_gpLayerList.end(); it++)
+    //while( m_gpLayerList.size() )
     {
-
+        //DelLayer( m_gpLayerList[0]->layer, true );
         wxDELETE( *it );
         //this call destructor and delete all mpLayers
         //wxDELETE( (*it)->layer );   //delete gpLayer
@@ -192,7 +192,7 @@ bool gpPanel::AddLayer(gpLayer *layer, mpWindow*& newMp)
 {
     if(layer==NULL)return false;
 
-    newMp = new mpWindow(this,wxNewId(), wxDefaultPosition,wxDefaultSize,0);
+    newMp = new mpWindow(this,wxNewId(), this->GetPosition(),this->GetSize(),0);
     gpLayer_s *slayer;
 
     newMp->SetToolTip(layer);

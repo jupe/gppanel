@@ -71,6 +71,7 @@
 		<Unit filename="..\gpPanel\baseData.h" />
 		<Unit filename="..\gpPanel\gpLayer.cpp" />
 		<Unit filename="..\gpPanel\gpPanel.cpp" />
+		<Unit filename="..\gpPanel\gpSizer.cpp" />
 		<Unit filename="..\gpPanel\lineLayer.h" />
 		<Unit filename="..\gpPanel\math\Fourier.cpp" />
 		<Unit filename="..\gpPanel\math\Fourier.h" />
@@ -92,6 +93,7 @@
 		<Unit filename="..\include\gpPanel.h" />
 		<Unit filename="..\include\gpPopup.h" />
 		<Unit filename="..\include\gpPopupGroup.h" />
+		<Unit filename="..\include\gpSizer.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
