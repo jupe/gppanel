@@ -84,6 +84,20 @@ int gpSizer::AddWindow(wxWindow* window)
 	m_windowList.push_back( gpHorizontalWindows(window) );
 	return m_windowList.size()-1;
 }
+bool gpSizer::DeleteWindow(wxWindow* window)
+{
+    std::deque< gpHorizontalWindows >::iterator it;
+    for(it = m_windowList.begin(); it!= m_windowList.end(); it++)
+	{
+	    if( (*it).Exist(window) )
+	    {
+	        m_windowList.erase(it);
+	        return true;
+	    }
+
+	}
+    return false;
+}
 bool gpSizer::AddWindow(unsigned int id, wxWindow* window, int prop)
 {
 	if( m_windowList.size() < id+1 )

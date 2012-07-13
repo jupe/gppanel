@@ -69,6 +69,7 @@ class gpSizer
         void AddNullWindow();
         int AddWindow(wxWindow* window);
         bool AddWindow(unsigned int id, wxWindow* window, int prop);
+        bool DeleteWindow(wxWindow* window);
         wxBoxSizer* GetSizer();
         void Fit();
         void Realize();

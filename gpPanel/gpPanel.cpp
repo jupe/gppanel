@@ -162,6 +162,7 @@ bool gpPanel::DelLayer(gpLayer *layer, bool alsoDeleteObject)
         {
 
             //(*it)->layer->DelAllLayers(alsoDeleteObject);   //gplayers
+            DeleteWindow((*it)->m_plot);
             wxDELETE( (*it)->m_plot );      //this call destructor and delete layers
             wxDELETE( *it );
             m_gpLayerList.erase(it);
