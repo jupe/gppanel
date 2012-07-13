@@ -1,13 +1,13 @@
-#include "lineLayer.h"
+#include "gpLineLayer.h"
 
 
 /*!
  *  \brief Constructor
  */
-lineLayer::lineLayer(wxString label, wxString x_label, wxString y_label)
+gpLineLayer::gpLineLayer(wxString label, wxString x_label, wxString y_label)
                         : gpLayer(label)
 {
-    //wxLogMessage(_("lineLayer::lineLayer()"));
+    //wxLogMessage(_("gpLineLayer::gpLineLayer()"));
     wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
                      wxFONTWEIGHT_NORMAL);
 
@@ -115,7 +115,7 @@ lineLayer::lineLayer(wxString label, wxString x_label, wxString y_label)
 /*!
  *  \brief Destructor
  */
-lineLayer::~lineLayer()
+gpLineLayer::~gpLineLayer()
 {
 
     //layers deleting handle mpWindow!;
@@ -133,7 +133,7 @@ lineLayer::~lineLayer()
 }
 
 
-mpPointLayer* lineLayer::AddSinglePoint(wxString name, wxString SeriesLabel,
+mpPointLayer* gpLineLayer::AddSinglePoint(wxString name, wxString SeriesLabel,
                                         wxWindow* parent)
 {
     mpLayer *Series = FindLayer( SeriesLabel );
@@ -152,7 +152,7 @@ mpPointLayer* lineLayer::AddSinglePoint(wxString name, wxString SeriesLabel,
 }
 
 
-mpPointLayer* lineLayer::AddDualPoint(wxString name1, wxString name2,
+mpPointLayer* gpLineLayer::AddDualPoint(wxString name1, wxString name2,
                                       wxString SeriesLabel, wxWindow* parent)
 {
     mpPointLayer *point2 = AddSinglePoint(name2, SeriesLabel, parent),
@@ -163,7 +163,7 @@ mpPointLayer* lineLayer::AddDualPoint(wxString name1, wxString name2,
     return point1;
 }
 
-void lineLayer::SetPointShape(int i)
+void gpLineLayer::SetPointShape(int i)
 {
     mpPointList_t::iterator it;
     for(it=pointList.begin(); it!= pointList.end(); it++)
@@ -183,7 +183,7 @@ void lineLayer::SetPointShape(int i)
 }
 
 
-void lineLayer::SetTaggingShape(int i)
+void gpLineLayer::SetTaggingShape(int i)
 {
     mpPointList_t::iterator it;
     for(it=pointList.begin(); it!= pointList.end(); it++)
@@ -199,7 +199,7 @@ void lineLayer::SetTaggingShape(int i)
 }
 
 
-void lineLayer::SetFormula(wxString yformula, wxString xformula)
+void gpLineLayer::SetFormula(wxString yformula, wxString xformula)
 {
     m_customXFormula = xformula;
     m_customYFormula = xformula;
@@ -209,7 +209,7 @@ void lineLayer::SetFormula(wxString yformula, wxString xformula)
 }
 
 
-//void lineLayer::DataSet(xyMultimap_t &data)
+//void gpLineLayer::DataSet(xyMultimap_t &data)
 //{
 //    chartData.DataSet(data);
 //    m_refreshNeeded = true;
@@ -228,7 +228,7 @@ void lineLayer::SetFormula(wxString yformula, wxString xformula)
  *  \param label
  *  The label of the Series to push to
  */
-void lineLayer::myDataPush(double x, double y, wxString SeriesLabel)
+void gpLineLayer::myDataPush(double x, double y, wxString SeriesLabel)
 {
     gpSeries *pointer = FindSeries( SeriesLabel );
     if( pointer == NULL )
@@ -247,7 +247,7 @@ void lineLayer::myDataPush(double x, double y, wxString SeriesLabel)
  *  \param SeriesLabel
  *  The label of the series to clear
  */
-void lineLayer::DataClear( wxString SeriesLabel )
+void gpLineLayer::DataClear( wxString SeriesLabel )
 {
     gpSeries *pointer = FindSeries( SeriesLabel );
     if( pointer == NULL )
@@ -263,7 +263,7 @@ void lineLayer::DataClear( wxString SeriesLabel )
 /*!
  *  \brief Refreshes the entire series
  */
-void lineLayer::RefreshChart( void )
+void gpLineLayer::RefreshChart( void )
 {
     for( unsigned int i=0; i< m_Series.size(); i++)
     {
@@ -275,7 +275,7 @@ void lineLayer::RefreshChart( void )
 }
 
 
-//void lineLayer::RefreshToolTip()
+//void gpLineLayer::RefreshToolTip()
 //{
 //    return;
 //
@@ -331,7 +331,7 @@ void lineLayer::RefreshChart( void )
  *
  *  \return a pointer to the newly added series
  */
-gpSeries* lineLayer::AddSeriesLayer( wxString label )
+gpSeries* gpLineLayer::AddSeriesLayer( wxString label )
 {
     gpSeries *Series;
 
@@ -357,7 +357,7 @@ gpSeries* lineLayer::AddSeriesLayer( wxString label )
  *
  *  \return a pointer to the found series
  */
-gpSeries* lineLayer::FindSeries( wxString SeriesLabel )
+gpSeries* gpLineLayer::FindSeries( wxString SeriesLabel )
 {
     for( unsigned int i=0; i<m_Series.size(); i++)
     {
@@ -379,7 +379,7 @@ gpSeries* lineLayer::FindSeries( wxString SeriesLabel )
  *
  *  \return a pointer to the lineChartLayer in the found series
  */
-mpLayer* lineLayer::FindLayer( wxString SeriesLabel )
+mpLayer* gpLineLayer::FindLayer( wxString SeriesLabel )
 {
     gpSeries *pointer = FindSeries( SeriesLabel );
     if(pointer == NULL)
@@ -403,18 +403,18 @@ mpLayer* lineLayer::FindLayer( wxString SeriesLabel )
  *  \param SeriesLabel
  *  The label of the series to change the pen style
  */
-void lineLayer::SetPen( wxPen pen, wxString SeriesLabel )
+void gpLineLayer::SetPen( wxPen pen, wxString SeriesLabel )
 {
     FindSeries( SeriesLabel )->SetPen( pen );
 }
 
 
 /*!
- *  \brief Adds the Legend info to the lineLayer.
+ *  \brief Adds the Legend info to the gpLineLayer.
  *  This can be done at any time so the user can customize whether it
  *  appears on top of or below other layers.
  */
-void lineLayer::AddLegendInfo( void )
+void gpLineLayer::AddLegendInfo( void )
 {
     wxBrush hatch2(wxColour(163,208,212), wxSOLID);
     leg = new mpInfoLegend(wxRect(200,20,40,40), &hatch2);
@@ -425,12 +425,12 @@ void lineLayer::AddLegendInfo( void )
 
 
 /*!
- *  \brief Adds the coordinate info to the lineLayer.
+ *  \brief Adds the coordinate info to the gpLineLayer.
  *  This can be done at any time so the user can customize whether it
  *  appears on top of or below the other layers.
  */
 
-void lineLayer::AddCoordInfo( void )
+void gpLineLayer::AddCoordInfo( void )
 {
     wxBrush hatch(wxColour(200,200,200), wxSOLID);
     nfo = new mpInfoCoords(wxRect(80,20,10,10), &hatch);
@@ -441,7 +441,7 @@ void lineLayer::AddCoordInfo( void )
 }
 
 
-void lineLayer::DeleteSeries( wxString SeriesLabel )
+void gpLineLayer::DeleteSeries( wxString SeriesLabel )
 {
     int indice;
     gpSeries *pointer = FindSeries( SeriesLabel );
@@ -474,7 +474,7 @@ void lineLayer::DeleteSeries( wxString SeriesLabel )
  *
  *  \return the indice of the series
  */
-int lineLayer::FindSeriesIndice( wxString SeriesLabel )
+int gpLineLayer::FindSeriesIndice( wxString SeriesLabel )
 {
     unsigned int i;
     for( i=0; i<m_Series.size(); i++)

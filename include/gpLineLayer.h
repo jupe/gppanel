@@ -15,7 +15,7 @@
 
 typedef std::deque<mpPointLayer*> mpPointList_t;
 
-class lineLayer : public gpLayer
+class gpLineLayer : public gpLayer
 {
     protected:
         /* Protected variables */
@@ -37,10 +37,10 @@ class lineLayer : public gpLayer
     public:
 
         //! Constructor
-        lineLayer (wxString label, wxString x_label, wxString y_label); //: gpLayer(label);
+        gpLineLayer (wxString label, wxString x_label, wxString y_label); //: gpLayer(label);
 
         //! Destructor
-        virtual ~lineLayer();
+        virtual ~gpLineLayer();
 
 		int GetPointCount()
             { return pointList.size(); }
