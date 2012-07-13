@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="win_slib_debug">
-				<Option output="..\lib\win\dgpPanel" prefix_auto="1" extension_auto="1" />
+				<Option output="..\lib\win\libdgpPanel" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj\win\Debug\" />
 				<Option type="2" />
@@ -23,7 +23,7 @@
 				</Compiler>
 			</Target>
 			<Target title="win_slib_release">
-				<Option output="..\lib\win\gpPanel" prefix_auto="1" extension_auto="1" />
+				<Option output="..\lib\win\libgpPanel" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj\win\Release\" />
 				<Option type="2" />
@@ -68,32 +68,35 @@
 			<Add directory="..\include" />
 		</Compiler>
 		<Unit filename="..\gpPanel\baseData.cpp" />
-		<Unit filename="..\gpPanel\baseData.h" />
 		<Unit filename="..\gpPanel\gpLayer.cpp" />
+		<Unit filename="..\gpPanel\gpLineLayer.cpp" />
 		<Unit filename="..\gpPanel\gpPanel.cpp" />
+		<Unit filename="..\gpPanel\gpSeries.cpp" />
 		<Unit filename="..\gpPanel\gpSizer.cpp" />
-		<Unit filename="..\gpPanel\lineLayer.h" />
 		<Unit filename="..\gpPanel\math\Fourier.cpp" />
-		<Unit filename="..\gpPanel\math\Fourier.h" />
-		<Unit filename="..\gpPanel\math\Fourier.inline.h" />
 		<Unit filename="..\gpPanel\math\gpFormula.cpp" />
 		<Unit filename="..\gpPanel\math\gpMath.cpp" />
-		<Unit filename="..\gpPanel\math\symbols.h" />
 		<Unit filename="..\gpPanel\mathplot.cpp" />
-		<Unit filename="..\gpPanel\mathplot.h" />
 		<Unit filename="..\gpPanel\menu\gpMenu.cpp" />
 		<Unit filename="..\gpPanel\menu\gpMenuGroup.cpp" />
 		<Unit filename="..\gpPanel\menu\gpPopup.cpp" />
 		<Unit filename="..\gpPanel\menu\gpPopupGroup.cpp" />
+		<Unit filename="..\include\Fourier.h" />
+		<Unit filename="..\include\Fourier.inline.h" />
+		<Unit filename="..\include\baseData.h" />
 		<Unit filename="..\include\gpFormula.h" />
 		<Unit filename="..\include\gpLayer.h" />
+		<Unit filename="..\include\gpLineLayer.h" />
 		<Unit filename="..\include\gpMath.h" />
 		<Unit filename="..\include\gpMenu.h" />
 		<Unit filename="..\include\gpMenuGroup.h" />
 		<Unit filename="..\include\gpPanel.h" />
 		<Unit filename="..\include\gpPopup.h" />
 		<Unit filename="..\include\gpPopupGroup.h" />
+		<Unit filename="..\include\gpSeries.h" />
 		<Unit filename="..\include\gpSizer.h" />
+		<Unit filename="..\include\mathplot.h" />
+		<Unit filename="..\include\symbols.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

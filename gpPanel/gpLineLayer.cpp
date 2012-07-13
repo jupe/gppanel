@@ -123,7 +123,7 @@ gpLineLayer::~gpLineLayer()
 
     for(unsigned int i=0; i< m_Series.size(); i++)
     {
-        wxLogDebug( _T("Deleting a series") );
+        //wxLogDebug( _T("Deleting a series") );
         delete m_Series[i];
     }
     //wxLogDebug( _T("Deleting axis") );
@@ -233,7 +233,7 @@ void gpLineLayer::myDataPush(double x, double y, wxString SeriesLabel)
     gpSeries *pointer = FindSeries( SeriesLabel );
     if( pointer == NULL )
     {
-        wxLogDebug( _T("ERROR, could not find series") );
+       // wxLogDebug( _T("ERROR, could not find series") );
         return;
     }
     pointer->DataPush(x,y);
@@ -252,7 +252,7 @@ void gpLineLayer::DataClear( wxString SeriesLabel )
     gpSeries *pointer = FindSeries( SeriesLabel );
     if( pointer == NULL )
     {
-        wxLogDebug( _T("ERROR, could not find series") );
+        //wxLogDebug( _T("ERROR, could not find series") );
         return;
     }
     pointer->DataClear();
@@ -384,7 +384,7 @@ mpLayer* gpLineLayer::FindLayer( wxString SeriesLabel )
     gpSeries *pointer = FindSeries( SeriesLabel );
     if(pointer == NULL)
     {
-        wxLogDebug( _T("ERROR, could not find series") );
+        //wxLogDebug( _T("ERROR, could not find series") );
         return NULL;
     }
     else
@@ -447,20 +447,20 @@ void gpLineLayer::DeleteSeries( wxString SeriesLabel )
     gpSeries *pointer = FindSeries( SeriesLabel );
     if(pointer == NULL)
     {
-        wxLogDebug( _T("ERROR, could not find series") );
+        //wxLogDebug( _T("ERROR, could not find series") );
         return;
     }
     DelAllLayers();
     return;
-    wxLogDebug( _T("Deleting layer") );
+    //wxLogDebug( _T("Deleting layer") );
     mpLayer* object = pointer->GetLayer();
     this->DelLayer( object , false );
 
-    wxLogDebug( _T("Deleting Series") );
+    //wxLogDebug( _T("Deleting Series") );
     indice = FindSeriesIndice( SeriesLabel );
-    wxLogDebug( _T("indice = %d"), indice);
+    //wxLogDebug( _T("indice = %d"), indice);
     m_Series.erase( m_Series.begin() + indice );
-    wxLogDebug( _T("Series deleted") );
+    //wxLogDebug( _T("Series deleted") );
 
     delete pointer;
 }
