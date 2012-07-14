@@ -413,11 +413,17 @@ void gpLineLayer::SetPen( wxPen pen, wxString SeriesLabel )
  *  \brief Adds the Legend info to the gpLineLayer.
  *  This can be done at any time so the user can customize whether it
  *  appears on top of or below other layers.
+ *
+ *  \param x
+ *  The x coordinate where the Legend info will appear.
+ *
+ *  \param y
+ *  The y coordinate where the Legend info will appear.
  */
-void gpLineLayer::AddLegendInfo( void )
+void gpLineLayer::AddLegendInfo( int x, int y )
 {
     wxBrush hatch2(wxColour(163,208,212), wxSOLID);
-    leg = new mpInfoLegend(wxRect(200,20,40,40), &hatch2);
+    leg = new mpInfoLegend(wxRect(x,y,40,40), &hatch2);
     leg->SetVisible(true);
 
     this->AddLayer( leg );
@@ -428,12 +434,18 @@ void gpLineLayer::AddLegendInfo( void )
  *  \brief Adds the coordinate info to the gpLineLayer.
  *  This can be done at any time so the user can customize whether it
  *  appears on top of or below the other layers.
+ *
+ *  \param x
+ *  The x coordinate where the Coordinate info will appear.
+ *
+ *  \param y
+ *  The y coordinate where the Coordinate info will appear.
  */
 
-void gpLineLayer::AddCoordInfo( void )
+void gpLineLayer::AddCoordInfo( int x, int y )
 {
     wxBrush hatch(wxColour(200,200,200), wxSOLID);
-    nfo = new mpInfoCoords(wxRect(80,20,10,10), &hatch);
+    nfo = new mpInfoCoords(wxRect(x,y,10,10), &hatch);
     nfo->SetVisible(true);
     //nfo->SetFormat(_("(X,Y):(%.3f,%.3f)"));
 

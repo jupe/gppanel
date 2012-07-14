@@ -92,8 +92,8 @@ class gpLineLayer : public gpLayer
         void SetPen( wxPen pen, wxString SeriesLabel );
         void DeleteSeries( wxString SeriesLabel );
 
-        void AddLegendInfo( void );
-        void AddCoordInfo( void );
+        void AddLegendInfo( int x, int y );
+        void AddCoordInfo( int x, int y );
 
         gpCHART_KIND GetChartKind( void )
             { return gpChart_kind; }
