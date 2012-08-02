@@ -167,3 +167,15 @@ void gpSeries::DataClear( void )
 {
     m_Data.DataClear();
 }
+
+
+/*!
+ *  \brief Gets the multimap data from m_Data
+ *
+ *  \return
+ *  A multimap of the data
+ */
+xyMultimap_t gpSeries::GetData( void )
+{
+    return m_Data.GetData();
+}

@@ -499,3 +499,23 @@ int gpLineLayer::FindSeriesIndice( wxString SeriesLabel )
 
     return (int) i;
 }
+
+
+/*!
+ *  \brief Gets the raw data from the specified series.
+ *
+ *  \param SeriesLabel
+ *  The label of the series to get the data from
+ *
+ *  \return
+ *  A multimap of the xy data.
+ */
+xyMultimap_t gpLineLayer::GetData( wxString SeriesLabel )
+{
+    gpSeries *pointer = FindSeries( SeriesLabel );
+    if(pointer == NULL)
+    {
+        //wxLogDebug( _T("ERROR, could not find series") );
+    }
+    return pointer->GetData();
+}

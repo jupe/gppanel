@@ -83,7 +83,10 @@ gpLayer::gpLayer(wxString name, wxString toolTip) : wxToolTip(toolTip)
 
     for(int i=0; i< (int)gpCHART_END_; i++)
     {
-        SetAxisUnitLabel((gpCHART_KIND)i, gpAXIS_DEFAULT,    _("X"), _("Y"));
+        //SetAxisUnitLabel((gpCHART_KIND)i, gpAXIS_DEFAULT,    _("X"), _("Y"));
+        // The line above has been replaced with the line below
+        // This will prevent [Y] or [X] from being appended to the labels.
+        SetAxisUnitLabel((gpCHART_KIND)i, gpAXIS_DEFAULT,    _(""),  _(""));
         SetAxisUnitLabel((gpCHART_KIND)i, gpAXIS_DISTANCE,   _("m"), _("m"));
         SetAxisUnitLabel((gpCHART_KIND)i, gpAXIS_TIME,       _("s"), _("s"));
         SetAxisUnitLabel((gpCHART_KIND)i, gpAXIS_PROCENT,    _("%"), _("%"));

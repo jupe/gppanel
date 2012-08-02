@@ -41,6 +41,8 @@ class gpSeries
 
         mpLayer* GetLayer( void );
 
+        xyMultimap_t GetData( void );
+
 
 };
 

@@ -92,11 +92,13 @@ class gpLineLayer : public gpLayer
         void SetPen( wxPen pen, wxString SeriesLabel );
         void DeleteSeries( wxString SeriesLabel );
 
-        void AddLegendInfo( int x, int y );
-        void AddCoordInfo( int x, int y );
+        void AddLegendInfo( int x = 200, int y = 20 );
+        void AddCoordInfo( int x = 80, int y = 20 );
 
         gpCHART_KIND GetChartKind( void )
             { return gpChart_kind; }
+
+        xyMultimap_t GetData( wxString SeriesLabel );
 
 
 
