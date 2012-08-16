@@ -2053,7 +2053,7 @@ void mpScaleY::Plot(wxDC & dc, mpWindow & w)
 			break;
 			case mpALIGN_LEFT: {
 				if ((!m_drawOutsideMargins) && (w.GetMarginLeft() > (ty + labelW + 8))) {
-					dc.DrawRotatedText( m_name, m_labelRect.x = (orgx - 6 - labelW - ty), m_labelRect.y=((maxYpx - minYpx + tx)>>1), 90);
+					dc.DrawRotatedText( m_name, m_labelRect.x = (orgx - 15 - labelW - ty), m_labelRect.y=((maxYpx - minYpx + tx)>>1), 90);
 					m_labelRect.width = ty;
                     m_labelRect.height = tx;
                     m_labelRect.y -= tx;
