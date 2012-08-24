@@ -2121,6 +2121,7 @@ BEGIN_EVENT_TABLE(mpWindow, wxWindow)
     EVT_MOTION( mpWindow::OnMouseMove )   // JLB
     EVT_LEFT_DOWN( mpWindow::OnMouseLeftDown)
     EVT_LEFT_UP( mpWindow::OnMouseLeftRelease)
+    EVT_LEAVE_WINDOW( mpWindow::OnMouseLeaveWindow)
 
     EVT_MENU( mpID_CENTER,    mpWindow::OnCenter)
     EVT_MENU( mpID_FIT,       mpWindow::OnFit)
@@ -2437,7 +2438,7 @@ void mpWindow::OnMouseMove(wxMouseEvent     &event)
     }
     else if (event.m_leftDown )
     {
-        if (m_movingInfoLayer == NULL && m_enableMouseNavigation)
+        if (m_movingInfoLayer == NULL && m_enableMouseNavigation && m_mouseDownHasHappened )
         {
             //zooming:
             if(m_zoomingRect==NULL) m_zoomingRect = new wxRect();
@@ -2502,6 +2503,7 @@ void mpWindow::OnMouseMove(wxMouseEvent     &event)
         }
     }
     else {
+        if(m_zoomingRect)wxDELETE(m_zoomingRect);
         //update all info layers
         for (li = m_layers.begin(); li != m_layers.end(); li++) {
             if ((*li)->IsInfo() && (*li)->IsVisible()) {
@@ -2527,6 +2529,7 @@ void mpWindow::OnMouseMove(wxMouseEvent     &event)
 
 void mpWindow::OnMouseLeftDown (wxMouseEvent &event)
 {
+    m_mouseDownHasHappened = true;
     m_mouseLClick_X = event.GetX();
     m_mouseLClick_Y = event.GetY();
 #ifdef MATHPLOT_DO_LOGGING
@@ -2576,23 +2579,33 @@ void mpWindow::OnMouseLeftRelease (wxMouseEvent &event)
         {
             //only when mouseNavigation is enabled
 
-            //if mpZOOM_X is selected, Y axis not zooming!
-            if( m_mouseZoomMode == mpZOOM_X){
-                press.y     = GetMarginTop();
-                release.y   = GetScrY() - GetMarginBottom();
-            }
-            if(m_mouseZoomMode == mpZOOM_Y)
+            if( m_mouseDownHasHappened )
             {
-                /// @todo not tested
-                press.x     = GetMarginLeft();
-                release.x   = GetScrX() - GetMarginRight();
+                // only when there has previously been a mouse down event.
+
+                //if mpZOOM_X is selected, Y axis not zooming!
+                if( m_mouseZoomMode == mpZOOM_X){
+                    press.y     = GetMarginTop();
+                    release.y   = GetScrY() - GetMarginBottom();
+                }
+                if(m_mouseZoomMode == mpZOOM_Y)
+                {
+                    /// @todo not tested
+                    press.x     = GetMarginLeft();
+                    release.x   = GetScrX() - GetMarginRight();
+                }
+
+                //pressed to avoid injury
+                //must be more than 8 pixel different
+                if( press.x>>4 != release.x>>4 &&
+                    press.y>>4 != release.y>>4 )
+                    ZoomRect(press, release);
+            }
+            else
+            {
+
             }
 
-            //pressed to avoid injury
-            //must be more than 8 pixel different
-            if( press.x>>4 != release.x>>4 &&
-                press.y>>4 != release.y>>4 )
-                ZoomRect(press, release);
         } /*else {
             if (m_coordTooltip) {
                 wxString toolTipContent;
@@ -2601,6 +2614,7 @@ void mpWindow::OnMouseLeftRelease (wxMouseEvent &event)
             }
         }*/
     }
+    m_mouseDownHasHappened = false;
     event.Skip();
 }
 
@@ -2904,6 +2918,13 @@ void mpWindow::OnShowPopupMenu(wxMouseEvent &event)
 {
 
 }
+
+void mpWindow::OnMouseLeaveWindow(wxMouseEvent &event)
+{
+    if(m_zoomingRect)wxDELETE(m_zoomingRect);
+    m_mouseDownHasHappened = false;
+}
+
 void mpWindow::OnMouseMiddleDown(wxMouseEvent     &event)
 {
     m_mouseMovedAfterMiddleClickWithCtrl = FALSE;

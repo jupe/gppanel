@@ -1635,6 +1635,7 @@ protected:
     void OnMouseMiddleDown(wxMouseEvent     &event); //!< Mouse middle down
     void OnMouseMiddleRelease(wxMouseEvent  &event); //!< Mouse middle up
     void OnShowPopupMenu (wxMouseEvent     &event); //handler, for detecting when the user drag with the right button or just "clicks" for the menu
+    void OnMouseLeaveWindow(wxMouseEvent   &event); //!< Mouse leaves window
 
     void OnScrollThumbTrack (wxScrollWinEvent &event); //!< Scroll thumb on scroll bar moving
     void OnScrollPageUp     (wxScrollWinEvent &event); //!< Scroll page up
@@ -1703,6 +1704,7 @@ protected:
     wxBitmap    *m_buff_bmp;            //!< For double buffering
     bool        m_enableDoubleBuffer;  //!< For double buffering
     bool        m_enableMouseNavigation;  //!< For pan/zoom with the mouse.
+    bool        m_mouseDownHasHappened;     //!< For filtering mouse release event without having had a mouse down event.
     bool        m_enableMousePopup;         //!< For popup menu
     bool        m_mouseMovedAfterRightClick;
     bool        m_mouseMovedAfterMiddleClickWithCtrl;
