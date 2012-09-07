@@ -85,7 +85,7 @@ class gpLineLayer : public gpLayer
 
         virtual void RefreshChart( void );
 
-        //virtual void RefreshToolTip();
+//        virtual void RefreshToolTip();
 
         gpSeries* AddSeriesLayer( wxString label );
         mpLayer* FindLayer( wxString SeriesLabel );

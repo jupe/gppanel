@@ -2175,7 +2175,7 @@ mpWindow::mpWindow( wxWindow *parent, wxWindowID id, const wxPoint &pos, const w
         - Wheel: Vertical scroll\n \
         - Wheel + SHIFT: Horizontal scroll\n \
         - Wheel + CTRL: Zoom in/out");
-    OnMouseHelpStringTitle =_("wxMathPlot help");
+    OnMouseHelpStringTitle =_("Mouse Help");
 
     m_zoomingRect = NULL;
     m_zoomingHorizontally = true;
@@ -4125,7 +4125,7 @@ void mpMovableObject::ShapeUpdated()
     // Just in case...
     if (m_shape_xs.size()!=m_shape_ys.size())
     {
-        ::wxLogError(wxT("[mpMovableObject::ShapeUpdated] Error, m_shape_xs and m_shape_ys have different lengths!"));
+        wxLogError(wxT("[mpMovableObject::ShapeUpdated] Error, m_shape_xs and m_shape_ys have different lengths!"));
     }
     else
     {
@@ -4264,9 +4264,9 @@ void mpCovarianceEllipse::RecalculateShape()
     m_shape_ys.clear();
 
     // Preliminar checks:
-    if (m_quantiles<0)  { ::wxLogError(wxT("[mpCovarianceEllipse] Error: quantiles must be non-negative")); return; }
-    if (m_cov_00<0)     { ::wxLogError(wxT("[mpCovarianceEllipse] Error: cov(0,0) must be non-negative")); return; }
-    if (m_cov_11<0)     { ::wxLogError(wxT("[mpCovarianceEllipse] Error: cov(1,1) must be non-negative")); return; }
+    if (m_quantiles<0)  { wxLogError(wxT("[mpCovarianceEllipse] Error: quantiles must be non-negative")); return; }
+    if (m_cov_00<0)     { wxLogError(wxT("[mpCovarianceEllipse] Error: cov(0,0) must be non-negative")); return; }
+    if (m_cov_11<0)     { wxLogError(wxT("[mpCovarianceEllipse] Error: cov(1,1) must be non-negative")); return; }
 
     m_shape_xs.resize( m_segments,0 );
     m_shape_ys.resize( m_segments,0 );
@@ -4278,7 +4278,7 @@ void mpCovarianceEllipse::RecalculateShape()
 
     double D = b*b - 4*c;
 
-    if (D<0)     { ::wxLogError(wxT("[mpCovarianceEllipse] Error: cov is not positive definite")); return; }
+    if (D<0)     { wxLogError(wxT("[mpCovarianceEllipse] Error: cov is not positive definite")); return; }
 
     double eigenVal0 =0.5*( -b + sqrt(D) );
     double eigenVal1 =0.5*( -b - sqrt(D) );
@@ -4362,7 +4362,7 @@ void mpPolygon::setPoints(
 {
     if ( points_xs.size()!=points_ys.size() )
     {
-        ::wxLogError(wxT("[mpPolygon] Error: points_xs and points_ys must have the same number of elements"));
+        wxLogError(wxT("[mpPolygon] Error: points_xs and points_ys must have the same number of elements"));
     }
     else
     {
@@ -4392,7 +4392,7 @@ void mpBitmapLayer::SetBitmap( const wxImage &inBmp, double x, double y, double 
 {
     if (!inBmp.Ok())
     {
-        ::wxLogError(wxT("[mpBitmapLayer] Assigned bitmap is not Ok()!"));
+        wxLogError(wxT("[mpBitmapLayer] Assigned bitmap is not Ok()!"));
     }
     else
     {
@@ -4855,7 +4855,7 @@ void mpPointLayer::Plot(wxDC & dc, mpWindow & w)
         }
 
         dc.SetPen( m_pen);
-        dc.DrawPolygon((wxList*)&m_polygon);
+        dc.DrawPolygon((wxPointList*)&m_polygon);
 
 
         if(m_taggline && coord.x > startPx && coord.x < endPx)

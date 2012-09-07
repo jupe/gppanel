@@ -121,13 +121,13 @@ bool gpPanel::Refresh(gpLayer* layer)
 }
 
 
-int gpPanel::AddLayer(gpLayer *layer)
+int gpPanel::AddLayer(gpLayer *layer, int MenuMask)
 {
     if(layer==NULL)return false;
 
     //storePanelSize();
     mpWindow* newMp;
-    /*bool ok = */AddLayer(layer, newMp);
+    /*bool ok = */AddLayer(layer, newMp, MenuMask);
     int id = AddWindow(newMp);
     gpSizer::Realize();
 
@@ -135,14 +135,15 @@ int gpPanel::AddLayer(gpLayer *layer)
 
     return id;
 }
-bool gpPanel::AddLayer(unsigned int id, gpLayer* layer, int proportion)
+bool gpPanel::AddLayer(unsigned int id, gpLayer* layer, int proportion,
+                       int MenuMask)
 {
     if(layer==NULL)return false;
 
     //storePanelSize();
 
     mpWindow* newMp;
-    bool ok = AddLayer(layer, newMp);
+    bool ok = AddLayer(layer, newMp, MenuMask);
     AddWindow(id, newMp, proportion);
 
     //restorePanelSize();
@@ -189,7 +190,7 @@ void gpPanel::DelAllLayers(bool alsoDeleteObjects)
 
 //PRIVATE FUNCTIONS:
 
-bool gpPanel::AddLayer(gpLayer *layer, mpWindow*& newMp)
+bool gpPanel::AddLayer(gpLayer *layer, mpWindow*& newMp, int MenuMask)
 {
     if(layer==NULL)return false;
 
@@ -199,7 +200,7 @@ bool gpPanel::AddLayer(gpLayer *layer, mpWindow*& newMp)
     newMp->SetToolTip(layer);
 
     m_gpLayerList.push_back( (slayer = new gpLayer_s( newMp, layer ) ) );
-    AddPopupMenus(slayer);
+    AddPopupMenus(slayer, MenuMask);
 
     newMp->SetMargins(0, 0, 50, 100);
     newMp->EnableDoubleBuffer(true);
@@ -230,7 +231,7 @@ bool gpPanel::AddLayer(gpLayer *layer, mpWindow*& newMp)
 }
 
 
-void gpPanel::AddPopupMenus(gpLayer_s *slayer)
+void gpPanel::AddPopupMenus(gpLayer_s *slayer, int MenuMask )
 {
     mpWindow* window = slayer->m_plot;
     gpLayer* layer = slayer->layer;
@@ -313,6 +314,7 @@ void gpPanel::AddPopupMenus(gpLayer_s *slayer)
                 default:  wxLogMessage(_("There is no popup handler!")); break;
             }
         }
+
     }
 
     // Default Window popup menu
@@ -337,6 +339,9 @@ void gpPanel::AddPopupMenus(gpLayer_s *slayer)
 
 
     popup->Insert(0, wxNewId(),  _("File"), submenu, _("Print, screenshots and exports") );
+
+
+
 
     // Edit
     wxMenuItem* item;
@@ -402,6 +407,33 @@ void gpPanel::AddPopupMenus(gpLayer_s *slayer)
         submenu->Append( popup->Remove(item) );
     popup->Insert(3, wxNewId(),  _("Help"), submenu, _("Help") );
 
+    // Remove the menu items that have not been allowed by MenuMask
+    int PositionOffset = 0;
+    if( !(MenuMask & POPUP_FILE) )
+    {
+        popup->Remove(popup->FindItemByPosition( 0 + PositionOffset ) );
+        PositionOffset--;
+    }
+    if( !(MenuMask & POPUP_CHART) )
+    {
+        popup->Remove(popup->FindItemByPosition( 1 + PositionOffset ) );
+        PositionOffset--;
+    }
+    if( !(MenuMask & POPUP_EDIT) )
+    {
+        popup->Remove(popup->FindItemByPosition( 2 + PositionOffset ) );
+        PositionOffset--;
+    }
+    if( !(MenuMask & POPUP_HELP) )
+    {
+        popup->Remove(popup->FindItemByPosition( 3 + PositionOffset ) );
+        PositionOffset--;
+    }
+    if( !(MenuMask & POPUP_FIT) )
+    {
+        popup->Remove(popup->FindItemByPosition( 4 + PositionOffset ) );
+        PositionOffset--;
+    }
 
 }
 

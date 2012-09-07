@@ -19,6 +19,12 @@
 #ifndef GP_POPUP_H
 #define GP_POPUP_H
 
+#define POPUP_FILE      1
+#define POPUP_CHART     2
+#define POPUP_EDIT      4
+#define POPUP_HELP      8
+#define POPUP_FIT       16
+
 #include <wx/menu.h>
 
 /**

@@ -199,7 +199,7 @@ class gpPanel : public wxPanel, public gpSizer//, private wxFileDropTarget,
         *   @param layer    gpLayer*
         *   @return true if ok
         */
-		int AddLayer( gpLayer* layer );
+		int AddLayer( gpLayer* layer, int MenuMask );
 
 		/**
 		*   Add layer to horizontalize
@@ -207,7 +207,8 @@ class gpPanel : public wxPanel, public gpSizer//, private wxFileDropTarget,
         *   @param layer    gpLayer*
         *   @return true if ok
         */
-		bool AddLayer(unsigned int id, gpLayer* layer, int proportion = 1);
+		bool AddLayer(unsigned int id, gpLayer* layer, int MenuMask,
+                int proportion = 1 );
 
 
 		/**
@@ -405,9 +406,9 @@ class gpPanel : public wxPanel, public gpSizer//, private wxFileDropTarget,
 	private:
 
 
-        bool AddLayer( gpLayer* layer, mpWindow*& window );
+        bool AddLayer( gpLayer* layer, mpWindow*& window, int MenuMask);
 
-        void AddPopupMenus(gpLayer_s*);
+        void AddPopupMenus(gpLayer_s*, int MenuMask);
         void OnMenuItemEnableSelected(wxCommandEvent& event);
         void OnMenuItemLockAllSelected(wxCommandEvent& event);
         void OnMenuItemFitAllSelected(wxCommandEvent& event);
