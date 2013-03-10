@@ -466,6 +466,7 @@ public:
 protected:
     wxRect m_dim;           //!< The bounding rectangle of the box. It may be resized dynamically by the Plot method.
     wxPoint m_reference;    //!< Holds the reference point for movements
+    wxBrush m_brush;        //!< The brush to be used for the background
     int m_winX, m_winY;     //!< Holds the mpWindow size. Used to rescale position when window is resized.
 
     DECLARE_DYNAMIC_CLASS(mpInfoLayer)
@@ -478,7 +479,7 @@ class WXDLLIMPEXP_MATHPLOT mpInfoCoords : public mpInfoLayer
 {
 public:
     /** Default constructor */
-    mpInfoCoords();
+    mpInfoCoords(unsigned int x_labelType);														//LOGtest "unsigned int x_labelType" added
     /** Complete constructor, setting initial rectangle and background brush.
         @param rect The initial bounding rectangle.
         @param brush The wxBrush to be used for box background: default is transparent */
@@ -504,6 +505,7 @@ public:
 protected:
     wxString m_content; //!< string holding the coordinates to be drawn.
     wxString m_format;  //!< Format of coordinate string. default: "x = %f y = %f"
+	unsigned int m_labelType;		//Added for LOGtest
 };
 
 /** @class mpInfoLegend
@@ -615,6 +617,8 @@ protected:
 #define mpX_DATE 0x03
 /** Set label for X axis in datetime mode: the value is always represented as yyyy-mm-ddThh:mm:ss. */
 #define mpX_DATETIME 0x04
+/*LOGtest* Set label for X axis in logarithmic mode */
+#define mpX_LOGARITHMIC 0x05									//################################LOGtest##########################
 /** Aligns Y axis to left border. For mpScaleY */
 #define mpALIGN_BORDER_LEFT mpALIGN_BORDER_BOTTOM
 /** Aligns Y axis to right border. For mpScaleY */
@@ -928,7 +932,7 @@ protected:
 };
 
 /** Abstract base class providing plot and labeling functionality for a locus plot F:N->X,Y.
-    Locus argument N is assumed to be in range 0 .. MAX_N, and implicitely derived by enumrating
+    Locus argument N is assumed to be in range 0 .. MAX_N, and implicitly derived by enumerating
     all locus values. Override mpFXY::Rewind and mpFXY::GetNextXY to implement a locus.
     Optionally implement a constructor and pass a name (label) and a label alignment
     to the constructor mpFXY::mpFXY. If the layer name is empty, no label will be plotted.
@@ -979,9 +983,9 @@ protected:
 	wxCoord maxDrawX, minDrawX, maxDrawY, minDrawY;
 	//int drawnPoints;
 
-    /** Update Label positioning data
+    /** Update label positioning data
 	    @param xnew New x coordinate
-		#param ynew New y coordinate
+		@param ynew New y coordinate
 	*/
 	void UpdateViewBoundary(wxCoord xnew, wxCoord ynew);
 
@@ -990,7 +994,7 @@ protected:
 
 /** Abstract base class providing plot and labeling functionality for functions F:Y->X.
     Override mpProfile::GetX to implement a function.
-    This class if similar to mpFY, but the Plot method is different. The plot is in fact represented by lines instead of points, which gives best rendering of rapidly-varying functions, and in general, data which are not so close one to another.
+    This class is similar to mpFY, but the Plot method is different. The plot is in fact represented by lines instead of points, which gives best rendering of rapidly-varying functions, and in general, data which are not so close one to another.
     Optionally implement a constructor and pass a name (label) and a label alignment
     to the constructor mpProfile::mpProfile. If the layer name is empty, no label will be plotted.
 */
@@ -1038,9 +1042,11 @@ protected:
 class WXDLLIMPEXP_MATHPLOT mpScaleX : public mpLayer
 {
 public:
-    /** @param name Label to plot by the ruler
-        @param flags Set position of the scale respect to the window.
-        @param ticks Select ticks or grid. Give TRUE for drawing axis ticks, FALSe for drawing the grid */
+    /** Full constructor.
+		@param name Label to plot by the ruler
+		@param flags Set the position of the scale with respect to the window.
+		@param ticks Select ticks or grid. Give TRUE (default) for drawing axis ticks, FALSE for drawing the grid.
+		@param type mpX_NORMAL for normal labels, mpX_TIME for time axis in hours, minutes, seconds. */
     mpScaleX(wxString name = wxT("X"), int flags = mpALIGN_CENTER, bool ticks = true, unsigned int type = mpX_NORMAL);
 
     /** Layer plot handler.
@@ -1124,7 +1130,7 @@ class WXDLLIMPEXP_MATHPLOT mpScaleY : public mpLayer
 public:
     /** @param name Label to plot by the ruler
         @param flags Set position of the scale respect to the window.
-        @param ticks Select ticks or grid. Give TRUE for drawing axis ticks, FALSe for drawing the grid */
+        @param ticks Select ticks or grid. Give TRUE (default) for drawing axis ticks, FALSE for drawing the grid */
     mpScaleY(wxString name = wxT("Y"), int flags = mpALIGN_CENTER, bool ticks = true);
 
     /** Layer plot handler.
@@ -1416,7 +1422,7 @@ public:
 
     /** Enable or disable X/Y scale aspect locking for the view.
         @note Explicit calls to mpWindow::SetScaleX and mpWindow::SetScaleY will set
-              an unlocked apect, but any other action changing the view scale will
+              an unlocked aspect, but any other action changing the view scale will
               lock the aspect again.
     */
     void LockAspect(bool enable = TRUE);
@@ -1440,8 +1446,8 @@ public:
 
     /** Set view to fit a given bounding box and refresh display.
         The X/Y scale aspect lock is taken into account.
-	If provided, the parameters printSizeX and printSizeY are taken as the DC size, and the
-        pixel scales are computed accordignly. Also, in this case the passed borders are not saved
+	If provided, the parameters printSizeX and printSizeY are taken as the DC size, and the 
+        pixel scales are computed accordingly. Also, in this case the passed borders are not saved 
         as the "desired borders", since this use will be invoked only when printing.
     */
     void Fit(double xMin, double xMax, double yMin, double yMax,wxCoord *printSizeX=NULL,wxCoord *printSizeY=NULL);
@@ -1473,14 +1479,13 @@ public:
 
     // Added methods by Davide Rondini
 
-    /** Counts the number of plot layers, excluding axes or text: this is to count only the layers which has a bounding box.
+    /** Counts the number of plot layers, excluding axes or text: this is to count only the layers which have a bounding box.
     	\return The number of profiles plotted.
     */
     unsigned int CountLayers();
-
-    /** Counts the number of plot layers, regardless they have a bounding box or not.
-    	\return The number of layers in the mpWindow
-    */
+    
+    /** Counts the number of plot layers, whether or not they have a bounding box.
+    	\return The number of layers in the mpWindow. */
     unsigned int CountAllLayers() { return m_layers.size(); };
 
     /** Draws the mpWindow on a page for printing
@@ -1508,7 +1513,8 @@ public:
    	  */
 	double GetDesiredYmax() {return m_desiredYmax; }
 
-	/** Returns the bounding box coords */
+	/** Returns the bounding box coordinates
+		@param bbox Pointer to a 6-element double array where to store bounding box coordinates. */
 	void GetBoundingBox(double* bbox);
 
     /** Enable/disable scrollbars
@@ -1522,12 +1528,12 @@ public:
     /** Draw the window on a wxBitmap, then save it to a file.
       @param filename File name where to save the screenshot
       @param type image type to be saved: see wxImage output file types for flags
-	  @param imageSize Set a size for the output image. Default is the same of screen size
+	  @param imageSize Set a size for the output image. Default is the same as the screen size
 	  @param fit Decide whether to fit the plot into the size*/
     bool SaveScreenshot(const wxString& filename, int type = wxBITMAP_TYPE_BMP, wxSize imageSize = wxDefaultSize, bool fit = false);
 
     /** This value sets the zoom steps whenever the user clicks "Zoom in/out" or performs zoom with the mouse wheel.
-      *  It must be a number above the unity. This number is used for zoom in, and its inverse for zoom out. Set to 1.5 by default. */
+      *  It must be a number above unity. This number is used for zoom in, and its inverse for zoom out. Set to 1.5 by default. */
     static double zoomIncrementalFactor;
 
     //void SetMaximumXZoomLevel(double level){ m_MaximumXZoomLevel = level; }
@@ -1539,22 +1545,22 @@ public:
         @param left Left border */
     void SetMargins(int top, int right, int bottom, int left);
 
-    /** Set top margin. @param top Top Margin */
+    /** Set the top margin. @param top Top Margin */
     void SetMarginTop(int top) { m_marginTop = top; };
-    /** Set right margin. @param right Right Margin */
+    /** Set the right margin. @param right Right Margin */
     void SetMarginRight(int right) { m_marginRight = right; };
-    /** Set bottom margin. @param bottom Bottom Margin */
+    /** Set the bottom margin. @param bottom Bottom Margin */
     void SetMarginBottom(int bottom) { m_marginBottom = bottom; };
-    /** Set left margin. @param left Left Margin */
+    /** Set the left margin. @param left Left Margin */
     void SetMarginLeft(int left) { m_marginLeft = left; };
 
-    /** Set top margin. @param top Top Margin */
+    /** Get the top margin. @param top Top Margin */
     int GetMarginTop() { return m_marginTop; };
-    /** Set right margin. @param right Right Margin */
+    /** Get the right margin. @param right Right Margin */
     int GetMarginRight() { return m_marginRight; };
-    /** Set bottom margin. @param bottom Bottom Margin */
+    /** Get the bottom margin. @param bottom Bottom Margin */
     int GetMarginBottom() { return m_marginBottom; };
-    /** Set left margin. @param left Left Margin */
+    /** Get the left margin. @param left Left Margin */
     int GetMarginLeft() { return m_marginLeft; };
 
     /** Enable / disable gradien backcolour */
@@ -1577,8 +1583,8 @@ public:
     // bool GetCoordTooltip() { return m_coordTooltip; };
 
     /** Check if a given point is inside the area of a mpInfoLayer and eventually returns its pointer.
-        @param point The position to be checked
-        @return if an info layer is found, returns its pointer, NULL otherwise */
+        @param point The position to be checked 
+        @return If an info layer is found, returns its pointer, NULL otherwise */
     mpInfoLayer* IsInsideInfoLayer(wxPoint& point);
 
     mpPointLayer* IsInsidePointLayer(wxPoint& point);
@@ -1630,11 +1636,11 @@ protected:
     void OnMouseMove     (wxMouseEvent     &event); //!< Mouse handler for mouse motion (for pan)
     void OnMouseLeftDown (wxMouseEvent     &event); //!< Mouse left click (for rect zoom)
     void OnMouseLeftRelease (wxMouseEvent  &event); //!< Mouse left click (for rect zoom)
-    void OnMouseRightDown(wxMouseEvent     &event); //!< Mouse right down
+    void OnMouseRightDown(wxMouseEvent     &event); //!< Mouse handler, for detecting when the user drags with the right button or just "clicks" for the menu
     void OnMouseRightRelease(wxMouseEvent  &event); //!< Mouse right up
     void OnMouseMiddleDown(wxMouseEvent     &event); //!< Mouse middle down
     void OnMouseMiddleRelease(wxMouseEvent  &event); //!< Mouse middle up
-    void OnShowPopupMenu (wxMouseEvent     &event); //handler, for detecting when the user drag with the right button or just "clicks" for the menu
+    void OnShowPopupMenu (wxMouseEvent     &event); //!< Mouse handler, will show context menu
 
     void OnScrollThumbTrack (wxScrollWinEvent &event); //!< Scroll thumb on scroll bar moving
     void OnScrollPageUp     (wxScrollWinEvent &event); //!< Scroll page up
@@ -1789,12 +1795,12 @@ protected:
     double              m_minX,m_maxX,m_minY,m_maxY;
 
     /** Rewind value enumeration with mpFXY::GetNextXY.
-        Overriden in this implementation.
+        Overridden in this implementation.
     */
     void Rewind();
 
     /** Get locus value for next N.
-        Overriden in this implementation.
+        Overridden in this implementation.
         @param x Returns X value
         @param y Returns Y value
     */
@@ -1884,7 +1890,7 @@ private:
 /** This virtual class represents objects that can be moved to an arbitrary 2D location+rotation.
   *  The current transformation is set through SetCoordinateBase.
   *  To ease the implementation of descendent classes, mpMovableObject will
-  *  be in charge of Bounding Box computation and layer render, assuming that
+  *  be in charge of Bounding Box computation and layer rendering, assuming that
   *  the object updates its shape in m_shape_xs & m_shape_ys.
   */
 class WXDLLIMPEXP_MATHPLOT mpMovableObject : public mpLayer
@@ -2140,7 +2146,7 @@ public:
       */
     void GetBitmapCopy( wxImage &outBmp ) const;
 
-    /** Change the bitmap associated to the layer (to update the screen, refresh the mpWindow).
+    /** Change the bitmap associated with the layer (to update the screen, refresh the mpWindow).
       *  @param inBmp The bitmap to associate. A copy is made, thus it can be released after calling this.
       *  @param x The left corner X coordinate (in plot units).
       *  @param y The top corner Y coordinate (in plot units).
