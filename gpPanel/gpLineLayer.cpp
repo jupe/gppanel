@@ -8,6 +8,10 @@ gpLineLayer::gpLineLayer(wxString label, wxString x_label, wxString y_label)
                         : gpLayer(label)
 {
     //wxLogMessage(_("gpLineLayer::gpLineLayer()"));
+
+    m_XLabel = x_label;
+    m_YLabel = y_label;
+
     wxFont graphFont(11, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL,
                      wxFONTWEIGHT_NORMAL);
 
@@ -446,6 +450,7 @@ void gpLineLayer::AddCoordInfo( int x, int y )
 {
     wxBrush hatch(wxColour(200,200,200), wxSOLID);
     nfo = new mpInfoCoords(wxRect(x,y,10,10), &hatch);
+    nfo->SetFormat(m_XLabel + wxT(" = %f\n" + m_YLabel + wxT(" = %f")));
     nfo->SetVisible(true);
     //nfo->SetFormat(_("(X,Y):(%.3f,%.3f)"));
 

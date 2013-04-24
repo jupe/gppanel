@@ -33,6 +33,8 @@ class gpLineLayer : public gpLayer
 
         double          samplerate;
         int             fftlenght;
+        wxString        m_XLabel;
+        wxString        m_YLabel;
 
     public:
 
