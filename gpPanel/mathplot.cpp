@@ -1722,7 +1722,7 @@ void mpScaleX::Plot(wxDC & dc, mpWindow & w)
 					fmt.Printf(wxT("%%.%df"), tmp >= -1 ? 2 : -tmp);
 				}
 			}
-		} 
+		}
 		//##########LOGtest######################
 		else if( m_labelType == mpX_LOGARITHMIC ) {
 			if( !m_labelFormat.IsEmpty() ) {
@@ -1768,7 +1768,7 @@ void mpScaleX::Plot(wxDC & dc, mpWindow & w)
 			{
 				if( dek == 0 ) p = (int)((log10(nx) - w.GetPosX()) * w.GetScaleX());	//LOGtest //w.GetPosX() defines  PlotStartpoint
 				else p = px + (int)((log10(nx)/* - w.GetPosX()*/) * w.GetScaleX());		//LOGtest
-				if( nx==10 ) 
+				if( nx==10 )
 				{
 					nx=1;
 					dek++;
@@ -1777,7 +1777,7 @@ void mpScaleX::Plot(wxDC & dc, mpWindow & w)
 			nx += 1;	//LOGtest
 			}
 			else p = (int)((n - w.GetPosX()) * w.GetScaleX());	//LOGtest
-			
+
 #ifdef MATHPLOT_DO_LOGGING
 		wxLogMessage(wxT("mpScaleX::Plot: n: %f -> p = %d"), n, p);
 #endif
@@ -4117,7 +4117,7 @@ bool mpPrintout::OnPrintPage(int page)
 		wxColour oldBgColour = plotWindow->GetBackgroundColour();
 		wxColour oldFgColour = plotWindow->GetForegroundColour();
 		wxColour oldAxColour = plotWindow->GetAxesColour();
-		
+
         // Draw background, ensuring to use white background for printing.
         trgDc->SetPen( *wxTRANSPARENT_PEN );
         // wxBrush brush( plotWindow->GetBackgroundColour() );
@@ -4897,7 +4897,16 @@ void mpPointLayer::Plot(wxDC & dc, mpWindow & w)
         }
 
         dc.SetPen( m_pen);
-        dc.DrawPolygon((wxPointList*)&m_polygon);
+
+        #if wxCHECK_VERSION(3, 0, 0)
+            // 2.9< -> void wxDC::DrawPolygon	(	const wxPointList *points,wxCoord 	xoffset = 0,wxCoord 	yoffset = 0,wxPolygonFillMode 	fill_style = wxODDEVEN_RULE )
+            dc.DrawPolygon((wxPointList*)&m_polygon);
+        #elif wxCHECK_VERSION(2, 8, 0)
+            // 2.8.x -> void DrawPolygon(wxList *points, wxCoord xoffset = 0, wxCoord yoffset = 0, int fill_style = wxODDEVEN_RULE)
+            dc.DrawPolygon((wxList*)&m_polygon);
+        #else
+            #warning NOT SUPPOTED
+        #endif
 
 
         if(m_taggline && coord.x > startPx && coord.x < endPx)
