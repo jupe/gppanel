@@ -47,6 +47,7 @@
 
 #include <cmath>
 #include <cstdio> // used only for debug
+#include <ctime> // used for representation of x axes involving date
 
 // #include "pixel.xpm"
 
@@ -233,9 +234,9 @@ wxSize mpInfoLayer::GetSize()
     return m_dim.GetSize();
 }
 
-mpInfoCoords::mpInfoCoords() : mpInfoLayer()
+mpInfoCoords::mpInfoCoords(unsigned int x_labelType) : mpInfoLayer()		//LOGtest "unsigned int x_labelType" added
 {
-
+    m_labelType = x_labelType;
 }
 
 mpInfoCoords::mpInfoCoords(wxRect rect, const wxBrush* brush) : mpInfoLayer(rect, brush)
@@ -1696,8 +1697,15 @@ void mpScaleX::Plot(wxDC & dc, mpWindow & w)
             dc.DrawLine( w.GetMarginLeft(), orgy, w.GetScrX() - w.GetMarginRight(), orgy); */
 
 		const double dig  = floor( log( 128.0 / w.GetScaleX() ) / mpLN10 );
-		const double step = exp( mpLN10 * dig);
-		const double end  = w.GetPosX() + (double)extend / w.GetScaleX();
+		//const double step = exp( mpLN10 * dig);
+		double step = exp( mpLN10 * dig );	//LOGtest
+		//const double end  = w.GetPosX() + (double)extend / w.GetScaleX();
+		double end = w.GetPosX() + (double)extend / w.GetScaleX();	//LOGtest
+
+		if( m_labelType == mpX_LOGARITHMIC ) {		//LOGtest
+			step = 1;
+			end = 10*(w.GetPosX() + (double)extend / w.GetScaleX());
+		}
 
 		wxCoord tx, ty;
 		wxString s;
@@ -1714,7 +1722,17 @@ void mpScaleX::Plot(wxDC & dc, mpWindow & w)
 					fmt.Printf(wxT("%%.%df"), tmp >= -1 ? 2 : -tmp);
 				}
 			}
-		} else {
+		} 
+		//##########LOGtest######################
+		else if( m_labelType == mpX_LOGARITHMIC ) {
+			if( !m_labelFormat.IsEmpty() ) {
+				fmt = m_labelFormat;
+			} else {
+				fmt = wxT("10^%.f");
+			}
+		}
+		//#######################################
+		else if( m_labelType == mpX_DATETIME || m_labelType == mpX_DATE || m_labelType == mpX_TIME ) {		//Added: " if( m_labelType == mpX_DATETIME || mpX_DATE || mpX_TIME )"
 			// Date and/or time axis representation
 			if (m_labelType == mpX_DATETIME) {
 				fmt = (wxT("%04.0f-%02.0f-%02.0fT%02.0f:%02.0f:%02.0f"));
@@ -1741,8 +1759,25 @@ void mpScaleX::Plot(wxDC & dc, mpWindow & w)
 		tmp=-65535;
 		int labelH = 0; // Control labels heigth to decide where to put axis name (below labels or on top of axis)
 		int maxExtent = 0;
-		for (n = n0; n < end; n += step) {
-			const int p = (int)((n - w.GetPosX()) * w.GetScaleX());
+		double nx = 1;	//LOGtest
+		int dek = 0, p, px;	//LOGtest
+		for (n = n0; n < end; n += step) {													//step size between axis ticks
+			//for( n=n0; n<=end; n+=step) {		//LOGtest
+			//const int p = (int)((n - w.GetPosX()) * w.GetScaleX());
+			if(	m_labelType == mpX_LOGARITHMIC )	//LOGtest
+			{
+				if( dek == 0 ) p = (int)((log10(nx) - w.GetPosX()) * w.GetScaleX());	//LOGtest //w.GetPosX() defines  PlotStartpoint
+				else p = px + (int)((log10(nx)/* - w.GetPosX()*/) * w.GetScaleX());		//LOGtest
+				if( nx==10 ) 
+				{
+					nx=1;
+					dek++;
+					px=p;
+				}			//LOGtest
+			nx += 1;	//LOGtest
+			}
+			else p = (int)((n - w.GetPosX()) * w.GetScaleX());	//LOGtest
+			
 #ifdef MATHPLOT_DO_LOGGING
 		wxLogMessage(wxT("mpScaleX::Plot: n: %f -> p = %d"), n, p);
 #endif
@@ -1770,6 +1805,10 @@ void mpScaleX::Plot(wxDC & dc, mpWindow & w)
 				// Write ticks labels in s string
 				if (m_labelType == mpX_NORMAL)
 					s.Printf(fmt, n);
+				//##############LOGtest####################
+				else if ( m_labelType == mpX_LOGARITHMIC )
+					s.Printf( fmt, n);
+				//#########################################
 				else if (m_labelType == mpX_DATETIME) {
 					time_t when = (time_t)n;
 					struct tm tm = *localtime(&when);
@@ -1817,6 +1856,10 @@ void mpScaleX::Plot(wxDC & dc, mpWindow & w)
 				// Write ticks labels in s string
 				if (m_labelType == mpX_NORMAL)
 					s.Printf(fmt, n);
+				//##############LOGtest####################
+				else if ( m_labelType == mpX_LOGARITHMIC )
+					s.Printf( fmt, n );
+				//#########################################
 				else if (m_labelType == mpX_DATETIME) {
 					time_t when = (time_t)n;
 					struct tm tm = *localtime(&when);
@@ -4074,9 +4117,8 @@ bool mpPrintout::OnPrintPage(int page)
 		wxColour oldBgColour = plotWindow->GetBackgroundColour();
 		wxColour oldFgColour = plotWindow->GetForegroundColour();
 		wxColour oldAxColour = plotWindow->GetAxesColour();
-
-        // Draw background:
-        //trgDc->SetDeviceOrigin(0,0);
+		
+        // Draw background, ensuring to use white background for printing.
         trgDc->SetPen( *wxTRANSPARENT_PEN );
         // wxBrush brush( plotWindow->GetBackgroundColour() );
 		wxBrush brush = *wxWHITE_BRUSH;
