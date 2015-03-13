@@ -1,19 +1,19 @@
 # gpPanel
 
 ## Easy Chart panel for wxWidget
-gpPanel is chart libary for wxWidget.<br>
-It inheritance from wxPanel and use modified [http://wxmathplot.sourceforge.net/ wxMathPlot ] library 
-at chart engine. <br>Flexible to use and easy to implement new gpLayers from examples.
+gpPanel is chart libary for wxWidget.
+It inheritance from wxPanel and use modified [wxMathPlot](http://wxmathplot.sourceforge.net/) library 
+at chart engine. Flexible to use and easy to implement new gpLayers from examples.
 
 ## Video
 Because video explain more than thousand words, there it is:
-http://www.youtube.com/watch?v=wmz4ElnNCS4"
+[http://www.youtube.com/watch?v=wmz4ElnNCS4]
 
 ## News
  * 28.4.2013
    * Merged several improvements to master branch.
  * 15.7.2012
-   * [https://groups.google.com/forum/#!forum/gppanel New Forum]
+   * [New Forum](https://groups.google.com/forum/#!forum/gppanel)
  * 14.7.2012
    * more developers, so there will be more implementation in future ;)
  * 23.4.2012
@@ -26,16 +26,12 @@ http://www.youtube.com/watch?v=wmz4ElnNCS4"
    *Major update for all part of code. a lot of code documentation added.
    *Change project version control to GIT.
      *If you want't to access it, you can send mail for me and I can add your account to commit list
- * 19.2.-10
-   * First version of documentation [http://www.ee.oulu.fi/~jussiva/gpPanel/ here].
  * 15.11.-09
   * wxMathPlot: 
    * bar layer ( vertical and horizontal )
     * default label (bar value, position: end of bar )
     * custom label for each of bars
  * 12.11.-09
-  * *SOURCECODE AVAILABLE ON [http://code.google.com/p/gppanel/source/checkout SVN]* (very early version)
-  * [http://gppanel.googlecode.com/files/gpSample.exe sample project] in binary format available (win32 exe)
   * Optimized mpFXY layer, when used big amount of data ( 2k .. 1M )
   * gpPanel add automatically popups for x&y axis, and main window to change chart type and axis scales. gpLayer can choice wich are enabled.
   * Update screenshots
@@ -48,7 +44,6 @@ http://www.youtube.com/watch?v=wmz4ElnNCS4"
    * Bounding X,Y (min/max) locks
    * mpPointLayer pop-up
    * gradient backcolour
-
  * 18.10.-09
   * Added new features to wxMathPlot library (look ex. screenshot 4)
   * Added my wxMathPlot library version to svn
@@ -58,7 +53,7 @@ if you're interested, please contact..
 
 ## summary
   * Inheritance to wxPanel
-  * chart engine is modified [http://wxmathplot.sourceforge.net/ wxMathPlot ]
+  * chart engine is modified [wxMathPlot](http://wxmathplot.sourceforge.net/) 
    * Added:
     * point layer
      * Find nearest chart coordinates from mouse
@@ -139,10 +134,5 @@ graphPanel->AddLayer( histogram );
 ...
 ```
 
-<wiki:comment>
-Maybe more images to here...
-</wiki:comment>
-||*Screenshots*|| || || ||
-||[http://jussiva.dyndns.org/images/gpPanel/screenshot.jpg](http://jussiva.dyndns.org/images/gpPanel/screenshot_.jpg)||[http://jussiva.dyndns.org/images/gpPanel/screenshot2.jpg http://jussiva.dyndns.org/images/gpPanel/screenshot2_.jpg]||[http://jussiva.dyndns.org/images/gpPanel/screenshot3.jpg http://jussiva.dyndns.org/images/gpPanel/screenshot3_.jpg]||[http://jussiva.dyndns.org/images/gpPanel/screenshot4.jpg http://jussiva.dyndns.org/images/gpPanel/screenshot4_.jpg]||
-||[http://jussiva.dyndns.org/images/gpPanel/screenshot5.jpg http://jussiva.dyndns.org/images/gpPanel/screenshot5_.jpg]||[http://jussiva.dyndns.org/images/gpPanel/screenshot6.jpg http://jussiva.dyndns.org/images/gpPanel/screenshot6_.jpg]||[http://jussiva.dyndns.org/gpPanel/screenshot7.png http://jussiva.dyndns.org/images/gpPanel/screenshot7_.png]||[http://jussiva.dyndns.org/images/gpPanel/screenshot8.png http://jussiva.dyndns.org/images/gpPanel/screenshot8_.png]||
-||pre UML<br>[http://jussiva.dyndns.org/images/gpPanel/gpPanelUML.png http://jussiva.dyndns.org/images/gpPanel/gpPanelUML_.png]||
+### ..Maybe more images to here...
+
