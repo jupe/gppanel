@@ -56,8 +56,8 @@
 					<Add option="-D__WXMSW__" />
 				</Compiler>
 				<Linker>
-					<Add library="C:\SourceCode\Libraries\wxWidgets2.8\lib\gcc_dll\libwxbase28u.a" />
-					<Add library="C:\SourceCode\Libraries\wxWidgets2.8\lib\gcc_dll\libwxmsw28_core.a" />
+					<Add library="$(#wx)\lib\gcc_dll\libwxbase28u.a" />
+					<Add library="$(#wx)\lib\gcc_dll\libwxmsw28_core.a" />
 				</Linker>
 			</Target>
 		</Build>
