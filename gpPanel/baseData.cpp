@@ -640,7 +640,7 @@ xyMultimap_t baseXYData::GetFft(int len, double samplerate)
 		signal[i++] = it->second/max;
 
 	// convert these doubles to complex numbers
-	std::complex<double> four[SIZE];
+	std::complex<double>* four = new std::complex<double>[SIZE];
 	for (i = 0; i < SIZE; ++i) four[i] = signal[i];
 
 	// forward fourier transform
@@ -654,9 +654,9 @@ xyMultimap_t baseXYData::GetFft(int len, double samplerate)
 	{
 		y = SQUARE(four[i].real(), four[i].imag());
 		map.insert( pair<double, double>( x*(double)i, y ) );
-		it++;
 	}
 	free(signal);
+    delete[] four;
 	return map;
 }
 xyMultimap_t baseXYData::GetDNL(bool arithMean, double *En, std::vector<double> *Evect)

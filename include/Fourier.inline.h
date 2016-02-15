@@ -317,8 +317,7 @@ void Fourier::fastTransform(std::complex<T> *data, unsigned int size, int increm
 
 				std::complex<T> temp = data[iIncrement] - data[lIncrement];
 				data[iIncrement] += data[lIncrement];
-				data[lIncrement].real() = cosA * temp.real() + sinA * temp.imag();
-				data[lIncrement].imag() = cosA * temp.imag() - sinA * temp.real();
+				data[lIncrement] = std::complex<T>(cosA * temp.real() + sinA * temp.imag(), cosA * temp.imag() - sinA * temp.real());
 			 }
 		}
 	}

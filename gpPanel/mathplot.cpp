@@ -3703,7 +3703,7 @@ void mpWindow::GetBoundingBox(double* bbox)
 	bbox[3] = m_maxY;
 }
 
-bool mpWindow::SaveScreenshot(const wxString& filename, int type, wxSize imageSize, bool fit)
+bool mpWindow::SaveScreenshot(const wxString& filename, wxBitmapType type, wxSize imageSize, bool fit)
 {
 	int sizeX, sizeY;
 	int bk_scrX, bk_scrY;
