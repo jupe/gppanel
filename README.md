@@ -77,17 +77,22 @@ Because video explain more than thousand words, there it is:
 
 
 //init gpPanel
-gpPanel* graphPanel = new gpPanel(this,ID_CUSTOM1,wxDefaultPosition,wxSize(240,336));
+gpPanel* graphPanel = new gpPanel(parentWindow,wxNewId(),wxDefaultPosition,wxSize(240,336));
 
-//create new histogram layer
-histogramLayer  *histogram = new histogramLayer(_("Histogram"), _("x-label"), _("y-label"));
+//create new line layer
+gpLineLayer* lineLayer = new gpLineLayer(_("Line"), _("x-label"), _("y-label"));
+
+// Create a data series
+gpSeries* series1 = lineLayer->AddSeriesLayer("Random");
 
 //Push data to gpLayer
 for(int i=0;i<12;i++)
-   histogram->DataPush( i, (rand()+1)%1024);
+	series1->DataPush( i, (rand()+1)%1024);
 
 //add gpLayer to gpPanel
-graphPanel->AddLayer( histogram );
+graphPanel->AddLayer( lineLayer, 0 );
+lineLayer->RefreshChart();
+graphPanel->Fit(lineLayer);
 
 ...
 ```

@@ -41,19 +41,94 @@ Compile and link them:
 
 Example:
 ------------------------------
-#include "lineLayer.h"
+// For compilers that support precompilation, includes "wx/wx.h".
+#include <wx/wxprec.h>
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
 
-gpPanel* graphPanel = new gpPanel( this, wxNewId(), wxDefaultPosition,wxSize(240,336) );
+//gpPanel widget
+#include <gpPanel.h>
+#include <gpLineLayer.h>
 
-//create new line layer
-lineLayer *line = new lineLayer(_("my line"), _("x-label"), _("y-label"));
+class MyFrame: public wxFrame
+{
+public:
+    MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size);
 
-//Push data to gpLayer
-for(int i=0;i<12;i++)
-   line->DataPush( i, (rand()+1)%1024);
+private:
+    void OnHello(wxCommandEvent& event);
+    void OnExit(wxCommandEvent& event);
+    void OnAbout(wxCommandEvent& event);
+    wxDECLARE_EVENT_TABLE();
+};
 
-//add gpLayer to gpPanel
-graphPanel->AddLayer( line );
+class MyApp: public wxApp
+{
+public:
+    virtual bool OnInit();
+private:
+    void gpTest(wxWindow* parentWindow);
+};
 
-//Finally, updated graphics data
-line->Refresh();
+wxBEGIN_EVENT_TABLE(MyFrame, wxFrame)
+    EVT_MENU(wxID_EXIT,  MyFrame::OnExit)
+    EVT_MENU(wxID_ABOUT, MyFrame::OnAbout)
+wxEND_EVENT_TABLE()
+wxIMPLEMENT_APP(MyApp);
+
+void MyApp::gpTest(wxWindow* parentWindow)
+{
+    //init gpPanel
+    gpPanel* graphPanel = new gpPanel(parentWindow,wxNewId(),wxDefaultPosition,wxSize(240,336));
+
+    //create new line layer
+    gpLineLayer* lineLayer = new gpLineLayer(_("Line"), _("x-label"), _("y-label"));
+
+    // Create a data series
+    gpSeries* series1 = lineLayer->AddSeriesLayer("Random");
+
+    //Push data to gpLayer
+    for(int i=0;i<12;i++)
+        series1->DataPush( i, (rand()+1)%1024);
+
+    //add gpLayer to gpPanel
+    graphPanel->AddLayer( lineLayer, 0 );
+    lineLayer->RefreshChart();
+    graphPanel->Fit(lineLayer);
+}
+
+bool MyApp::OnInit()
+{
+    MyFrame* frame = new MyFrame( "wxWidgets Demo", wxPoint(50, 50), wxSize(850, 640) );
+    gpTest(frame);
+    frame->Show( true );
+    return true;
+}
+
+MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
+    : wxFrame(NULL, wxID_ANY, title, pos, size)
+{
+    wxMenu* menuFile = new wxMenu;
+    menuFile->AppendSeparator();
+    menuFile->Append(wxID_EXIT);
+    wxMenu* menuHelp = new wxMenu;
+    menuHelp->Append(wxID_ABOUT);
+    wxMenuBar* menuBar = new wxMenuBar;
+    menuBar->Append( menuFile, "&File" );
+    menuBar->Append( menuHelp, "&Help" );
+    SetMenuBar( menuBar );
+    CreateStatusBar();
+    SetStatusText( "gpPanel sample app" );
+}
+
+void MyFrame::OnExit(wxCommandEvent& event)
+{
+    Close( true );
+}
+
+void MyFrame::OnAbout(wxCommandEvent& event)
+{
+    wxMessageBox( "This is a wxWidgets' gpPanel sample",
+        "About gpPanel Sample", wxOK | wxICON_INFORMATION );
+}
