@@ -67,6 +67,8 @@
 // Number of pixels to scroll when scrolling by a line
 #define mpSCROLL_NUM_PIXELS_PER_LINE  10
 
+WX_DEFINE_LIST(PointList);
+
 // See doxygen comments.
 double mpWindow::zoomIncrementalFactor = 1.5;
 

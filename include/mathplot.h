@@ -84,7 +84,6 @@
 
 WX_DECLARE_LIST(wxPoint, PointList);
 #include <wx/listimpl.cpp>
-WX_DEFINE_LIST(PointList);
 
 
 // For memory leak debug
