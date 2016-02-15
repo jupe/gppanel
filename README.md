@@ -7,7 +7,7 @@ at chart engine. Flexible to use and easy to implement new gpLayers from example
 
 ## Video
 Because video explain more than thousand words, there it is:
-[http://www.youtube.com/watch?v=wmz4ElnNCS4]
+[![gpPanel](http://img.youtube.com/vi/wmz4ElnNCS4/0.jpg)](http://www.youtube.com/watch?v=wmz4ElnNCS4)
 
 ## summary
   * Inheritance to wxPanel
