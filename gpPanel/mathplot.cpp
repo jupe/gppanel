@@ -67,6 +67,8 @@
 // Number of pixels to scroll when scrolling by a line
 #define mpSCROLL_NUM_PIXELS_PER_LINE  10
 
+WX_DEFINE_LIST(PointList);
+
 // See doxygen comments.
 double mpWindow::zoomIncrementalFactor = 1.5;
 
@@ -3703,7 +3705,7 @@ void mpWindow::GetBoundingBox(double* bbox)
 	bbox[3] = m_maxY;
 }
 
-bool mpWindow::SaveScreenshot(const wxString& filename, int type, wxSize imageSize, bool fit)
+bool mpWindow::SaveScreenshot(const wxString& filename, wxBitmapType type, wxSize imageSize, bool fit)
 {
 	int sizeX, sizeY;
 	int bk_scrX, bk_scrY;

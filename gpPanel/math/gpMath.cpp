@@ -56,14 +56,14 @@ double mean::getArithmeticMean()
 double mean::getGeometricMean()
 {
 	double x = 0, y = 0;
-	long double p=1;
+	double p=1;
 	int n = 0;
 	reset();
 	while(getNextXY(n, x, y))
 	{
 		p *= y;
 	}
-	return pow(p, (1.0/(double)n) );
+	return pow(p, (1.0f/(double)n) );
 }
 double mean::getHarmonicMean()
 {

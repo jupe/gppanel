@@ -17,11 +17,17 @@
 
 gpMenu::gpMenu()
 {
-	menu = new wxMenu();
-	submenu = 0;
-	primaryId = 0;
+	m_menu = new wxMenu();
+	m_submenu = 0;
+	m_primaryId = 0;
 }
-gpMenu::~gpMenu(){}
+
+gpMenu::~gpMenu()
+{
+    delete m_menu;
+    delete m_submenu;
+}
+
 wxMenuItem*  gpMenu::GetMenuItemById(long id, wxMenu *men)
 {
 	wxMenuItemList list;
@@ -46,8 +52,8 @@ int gpMenu::addMenuItem(wxString label, wxString help, wxItemKind kind, bool che
 {
 	int id = wxNewId();
 	if(label.Length()==0)return 0;//label cannot be empty
-	wxMenuItem* item = new wxMenuItem(menu, id ,label , help, kind);
-	menu->Append( item );
+	wxMenuItem* item = new wxMenuItem(m_menu, id ,label , help, kind);
+	m_menu->Append( item );
 
 
 	if(togroup) m_group[togroup].Add(id, item);
@@ -60,8 +66,8 @@ int gpMenu::addSubMenuItem(wxString label, wxString help, wxItemKind kind, bool 
 {
 	int id = wxNewId();
 	if(label.Length()==0)return 0;//label cannot be empty
-	wxMenuItem* item = new wxMenuItem(submenu, id ,label , help, kind);
-	submenu->Append( item );
+	wxMenuItem* item = new wxMenuItem(m_submenu, id ,label , help, kind);
+	m_submenu->Append( item );
 
 	if(togroup) m_group[togroup].Add(id, item);
 
@@ -70,29 +76,29 @@ int gpMenu::addSubMenuItem(wxString label, wxString help, wxItemKind kind, bool 
 }
 void gpMenu::newSubMenu(wxString label)
 {
-	submenu = new wxMenu(label);
+	m_submenu = new wxMenu(label);
 }
 int gpMenu::AppendSubMenu(wxString label , wxString helpString)
 {
 	int id=wxNewId();
 	if(label.Length()==0)return 0; //label cannot be empty
-	menu->Append( id, label , submenu, helpString);
+	m_menu->Append( id, label , m_submenu, helpString);
 	return id;
 }
 int gpMenu::AddId(int id)
 {
-	extraIdList.push_back(id);
+	m_extraIdList.push_back(id);
 	return id;
 }
 int gpMenu::AddNewId(bool primary)
 {
 	int id =  AddId( wxNewId() );
-	if( primary ) primaryId = id;
+	if( primary ) m_primaryId = id;
 	return id;
 }
 int gpMenu::GetPrimaryId() const
 {
-	return primaryId;
+	return m_primaryId;
 }
 void gpMenu::SetToolbarGroup(wxToolBar* toolbar, int group)
 {
@@ -125,19 +131,19 @@ void gpMenu::CheckMenuGroup(int group, bool checked)
 bool gpMenu::MenuIdBelongs(int id)
 {
 	bool found = (GetMenuItemById(id)==0 ? false : true);
-	if(! found &&  find(extraIdList.begin(), extraIdList.end(), id) != extraIdList.end() )
+	if(! found &&  find(m_extraIdList.begin(), m_extraIdList.end(), id) != m_extraIdList.end() )
 		found = true;
 
 	return found;
 }
 wxMenuItemList&  gpMenu::GetMenuItems()
 {
-	return menu->GetMenuItems();
+	return m_menu->GetMenuItems();
 }
 
 wxMenu* gpMenu::GetMenu()
 {
-	return menu;
+	return m_menu;
 }
 
 

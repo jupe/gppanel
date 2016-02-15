@@ -347,7 +347,7 @@ void gpFormula::toUpperCase(string& str)
 {
 	// explicit cast needed to resolve ambiguity
 	std::transform(str.begin(), str.end(), str.begin(),
-			   (int(*)(int)) std::toupper);
+			   (int(*)(int)) ::toupper);
 
 }
 

@@ -727,7 +727,7 @@ void gpPanel::OnMenuItemSaveScreenshot(wxCommandEvent& event)
     if(fileDialog.ShowModal() == wxID_OK)
     {
         wxFileName namePath(fileDialog.GetPath());
-        int fileType = wxBITMAP_TYPE_BMP;
+        wxBitmapType fileType = wxBITMAP_TYPE_BMP;
         if( namePath.GetExt().CmpNoCase(wxT("jpeg")) == 0 ) fileType = wxBITMAP_TYPE_JPEG;
         else if( namePath.GetExt().CmpNoCase(wxT("jpg")) == 0 )  fileType = wxBITMAP_TYPE_JPEG;
         else if( namePath.GetExt().CmpNoCase(wxT("png")) == 0 )  fileType = wxBITMAP_TYPE_PNG;
