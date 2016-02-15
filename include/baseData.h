@@ -618,7 +618,6 @@ class lineChartLayer : public mpFXY,  public baseXYData
 
     public:
         lineChartLayer(wxString label);
-        baseXYData& operator=(const baseXYData& datacopy);
 
         /**
          * Virtual functions for mpFXY

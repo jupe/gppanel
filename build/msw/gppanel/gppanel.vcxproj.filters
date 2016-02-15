@@ -65,9 +65,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\gpPanel\math\Fourier.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\gpPanel\math\gpFormula.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

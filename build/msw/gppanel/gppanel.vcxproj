@@ -92,7 +92,6 @@
     <ClCompile Include="..\..\..\gpPanel\gpSeries.cpp" />
     <ClCompile Include="..\..\..\gpPanel\gpSizer.cpp" />
     <ClCompile Include="..\..\..\gpPanel\mathplot.cpp" />
-    <ClCompile Include="..\..\..\gpPanel\math\Fourier.cpp" />
     <ClCompile Include="..\..\..\gpPanel\math\gpFormula.cpp" />
     <ClCompile Include="..\..\..\gpPanel\math\gpMath.cpp" />
     <ClCompile Include="..\..\..\gpPanel\menu\gpMenu.cpp" />

@@ -859,11 +859,6 @@ lineChartLayer::lineChartLayer(wxString label) : mpFXY( label ), baseXYData( )
 {
 	m_drawOutsideMargins 	= false;
 }
-baseXYData& lineChartLayer::operator=(const baseXYData& datacopy)
-{
-	*this = datacopy;
-	return *this;
-}
 
 /* Virtual functions for mpFXY */
 bool lineChartLayer::GetNextXY( double & x, double & y )
