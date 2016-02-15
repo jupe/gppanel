@@ -160,10 +160,10 @@ class gpMenu
         void CheckToolBarItem(wxToolBar* toolbar, int id, bool checked = true);
 
 
-        wxMenu              *menu;      	//!< wxMenu for handling
-        wxMenu              *submenu;   	//!< submenu
-        std::vector<int>    extraIdList;  	//!< Other id's to belong to this
-        int                 primaryId;      //!< Primary ID
+        wxMenu              *m_menu;      	//!< wxMenu for handling
+        wxMenu              *m_submenu;   	//!< submenu
+        std::vector<int>    m_extraIdList; 	//!< Other id's to belong to this
+        int                 m_primaryId;    //!< Primary ID
 
         MenuGroupHashMap    m_group;	    //!< Map for menu groups
 
