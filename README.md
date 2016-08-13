@@ -66,6 +66,24 @@ Because video explain more than thousand words, there it is:
   * Easy to use for everyone (If you know how use wxPanel, you know how to use gpPanel ;).
   * Customizable
 
+## Installation 
+
+Using Cmake on Linux/BSD:
+ 1. mkdir cmake
+ 2. cd cmake
+ 3. ccmake .. `
+   * set variables, Eg. CMAKE_PREFIX to where you want gpPanel to be installed
+ 4. make
+ 5. sudo make install
+
+Using Cmake on windows to create Visual Studio Solution:
+ 1. mkdir cmake
+ 2. cd cmake
+ 3. ccmake .. -G "Visual Studio 10 Win64"
+   * set variables, Eg. CMAKE_PREFIX to where you want gpPanel to be installed
+   * other generators are availible other than  VS10, you can run cmake --help to see a list of them
+ 4. open the sln in visual studio
+ 5. build as you would with VS
 
 ## Example graph frame features:
   * menu items for each of gpLayers:
