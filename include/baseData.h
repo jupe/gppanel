@@ -612,7 +612,7 @@ class MixedLineChartLayer : public mpFXY, public baseXYMixedData
  *  Mixed Line chart
  *  -use baseXYMixedLayer
  */
-class lineChartLayer : public mpFXY,  public baseXYData
+class lineChartLayer : public mpXYArea,  public baseXYData
 {
     private:
 

@@ -118,6 +118,7 @@ class WXDLLIMPEXP_MATHPLOT mpWindow;
 class WXDLLIMPEXP_MATHPLOT mpText;
 class WXDLLIMPEXP_MATHPLOT mpPrintout;
 class WXDLLIMPEXP_MATHPLOT mpPointLayer;
+class WXDLLIMPEXP_MATHPLOT mpXYArea;
 
 /** Command IDs used by mpWindow */
 enum
@@ -2416,6 +2417,18 @@ class WXDLLIMPEXP_MATHPLOT mpPointLayer : public mpLayer
         wxMenu          m_popmenu;              //!< user handled popupmenu when clicked the point shape
         //bool            m_showHelpLine;
     DECLARE_DYNAMIC_CLASS(mpPointLayer)
+};
+
+class mpXYArea : public mpFXY
+{
+public:
+	/** @param name  Label
+	@param flags Label alignment, pass one of #mpALIGN_NE, #mpALIGN_NW, #mpALIGN_SW, #mpALIGN_SE.
+	*/
+	mpXYArea(wxString name = wxEmptyString, int flags = mpALIGN_NE);
+	void Plot(wxDC & dc, mpWindow & w) override;
+protected:
+	//DECLARE_DYNAMIC_CLASS(mpXYArea)
 };
 
 /*@}*/

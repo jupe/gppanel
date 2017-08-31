@@ -200,8 +200,10 @@ bool gpPanel::AddLayer(gpLayer *layer, mpWindow*& newMp, int MenuMask)
     newMp->SetToolTip(layer);
 
     m_gpLayerList.push_back( (slayer = new gpLayer_s( newMp, layer ) ) );
-    AddPopupMenus(slayer, MenuMask);
-
+	if (MenuMask != 0)
+	{
+		AddPopupMenus(slayer, MenuMask);
+	}
     newMp->SetMargins(0, 0, 50, 100);
     newMp->EnableDoubleBuffer(true);
     newMp->SetMPScrollbars( layer->IsWindowScrollbarsEnabled() );
@@ -617,7 +619,7 @@ void gpPanel::OnMenuHighlight(wxCommandEvent& event)
 }
 void gpPanel::OnMenuItemGraphEnableEvent(wxCommandEvent& event)
 {
-    bool visible = event.GetSelection();
+    bool visible = (bool)event.GetSelection();
     int id = event.GetId();
     SetLayerVisible( id, visible); //set layer visibility
 
@@ -631,13 +633,13 @@ void gpPanel::OnMenuItemGraphLockAspectEvent(wxCommandEvent& event)
 {
     gpLayer_s *gp = GetLayerByMenuId(event.GetId() );
     if(gp==0)return;
-    gp->m_plot->LockAspect(event.GetSelection());
+    gp->m_plot->LockAspect((bool)event.GetSelection());
     gp->m_plot->UpdateAll();
 
 }
 void gpPanel::OnMenuItemGraphLockEvent(wxCommandEvent& event)
 {
-    bool enable = event.GetSelection();
+    bool enable = (bool)event.GetSelection();
     gpLayer_s *gp = GetLayerByMenuId(event.GetId() );
     if(gp==0)return;
 
@@ -659,27 +661,27 @@ void gpPanel::OnMenuItemTooltip(wxCommandEvent& event)
 {
     gpLayer_s *gp = GetLayerByMenuId(event.GetId() );
     if(gp==0)return;
-    gp->layer->wxToolTip::Enable( event.GetSelection() );
+    gp->layer->wxToolTip::Enable((bool)event.GetSelection() );
 }
 void gpPanel::OnMenuItemMarkEvent(wxCommandEvent& event)
 {
     gpLayer_s *gp = GetLayerByMenuId(event.GetId() );
     if(gp==0)return;
-    gp->layer->ShowCornerMarkers(event.GetSelection());
+    gp->layer->ShowCornerMarkers((bool)event.GetSelection());
     gp->m_plot->UpdateAll();
 }
 void gpPanel::OnMenuItemShowInfo(wxCommandEvent& event)
 {
     gpLayer_s *gp = GetLayerByMenuId(event.GetId() );
     if(gp==0)return;
-    gp->layer->ShowInfoLayer(event.GetSelection());
+    gp->layer->ShowInfoLayer((bool)event.GetSelection());
     gp->m_plot->UpdateAll();
 }
 void gpPanel::OnMenuItemContinousLine(wxCommandEvent& event)
 {
     gpLayer_s *gp = GetLayerByMenuId( event.GetId() );
     if(gp==0)return;
-    gp->layer->SetContinousLine(event.GetSelection());
+    gp->layer->SetContinousLine((bool)event.GetSelection());
     gp->m_plot->UpdateAll();
 }
 void gpPanel::OnMenuItemFit(wxCommandEvent& event)

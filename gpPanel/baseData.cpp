@@ -855,7 +855,7 @@ void MixedLineChartLayer::Rewind()
  /* ******************************************** */
 /*  		DEFAULT LINE CHART LAYER  			 */
 /* ********************************************* */
-lineChartLayer::lineChartLayer(wxString label) : mpFXY( label ), baseXYData( )
+lineChartLayer::lineChartLayer(wxString label) : mpXYArea( label ), baseXYData( )
 {
 	m_drawOutsideMargins 	= false;
 }

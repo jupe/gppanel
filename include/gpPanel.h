@@ -199,7 +199,7 @@ class gpPanel : public wxPanel, public gpSizer//, private wxFileDropTarget,
         *   @param layer    gpLayer*
         *   @return true if ok
         */
-		int AddLayer( gpLayer* layer, int MenuMask );
+		int AddLayer( gpLayer* layer, int MenuMask = 0);
 
 		/**
 		*   Add layer to horizontalize
