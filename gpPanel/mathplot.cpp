@@ -2074,9 +2074,9 @@ void mpScaleY::Plot(wxDC & dc, mpWindow & w)
                     dc.SetPen( m_pen);
                 }
                 // Print ticks labels
-                s.Printf(fmt, std::fabs(n));
+                //s.Printf(fmt, std::fabs(n - 50));
 				//para inverter
-				//s.Printf(fmt, std::fabs(n - maxScaleAbs));
+				s.Printf(fmt, std::fabs(n - maxScaleAbs));
                 dc.GetTextExtent(s, &tx, &ty);
     #ifdef MATHPLOT_DO_LOGGING
                 if (ty != labelHeigth) wxLogMessage(wxT("mpScaleY::Plot: ty(%f) and labelHeigth(%f) differ!"), ty, labelHeigth);
@@ -5157,8 +5157,13 @@ void mpXYArea::Plot(wxDC & dc, mpWindow & w)
 				{
 					first = FALSE;
 					x0 = x1; c0 = c1;
+					// Código Original
+					/*
+					pts.push_back(wxPoint(x0, w.y2p(0)));
+					pts.push_back(wxPoint(x0, c0));
+					*/
 					pts.push_back(wxPoint(x0, w.y2p(GetMaxY())));
-					pts.push_back(wxPoint(x0, w.y2p(GetMaxY()) - c0 + GetMinY()));
+					pts.push_back(wxPoint(x0, w.y2p(GetMaxY()) - c0));
 				}
 				bool outUp, outDown;
 				if ((x1 >= startPx) && (x0 <= endPx)) {
@@ -5208,6 +5213,10 @@ void mpXYArea::Plot(wxDC & dc, mpWindow & w)
 						}
 
 						//dc.DrawLine(x0, c0, x1, c1);
+						// Código Original
+						/*
+						pts.push_back(wxPoint(x1, c1));
+						*/
 						pts.push_back(wxPoint(x1, w.y2p(GetMinY()) - c1));
 						UpdateViewBoundary(x1, c1);
 
@@ -5221,6 +5230,10 @@ void mpXYArea::Plot(wxDC & dc, mpWindow & w)
 				if (nextX0) { x0 = *nextX0; wxDELETE(nextX0); }
 				if (nextY0) { c0 = *nextY0; wxDELETE(nextY0); }
 			}
+			// Código Original
+			/*
+			pts.push_back(wxPoint(x0, w.y2p(GetMinY())));
+			*/
 			pts.push_back(wxPoint(x0, w.y2p(GetMaxY())));
 			dc.DrawPolygon(pts.size(), pts.data());
 		}
