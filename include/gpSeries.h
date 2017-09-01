@@ -18,6 +18,7 @@ public:
 	gpSeries( wxString label );
 	//! Destructor
 	virtual ~gpSeries( void );
+	void invertY();
 	void DataPush( double x, double y );
 	void RefreshChart(gpCHART_KIND gpChart_kind, double samplerate,
 		int fftlenght, wxString customXFormula, wxString customYFormula,

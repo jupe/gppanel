@@ -20,6 +20,11 @@ gpSeries::~gpSeries( void )
     //delete m_Layer;
 }
 
+void gpSeries::invertY()
+{
+	m_Data.invertY();
+}
+
 
 /*!
  *  \brief Calls a function to push data to m_Data
@@ -47,7 +52,6 @@ void gpSeries::RefreshChart( gpCHART_KIND gpChart_kind, double samplerate,
     m_Layer->DataSet( m_Data.GetData() );
 	m_barLayer->DataSet(m_Data.GetData());
 	m_barLayer->SetGradientBackColour(false);
-
     if(gpChart_kind== gpCHART_DEFAULT)
     {
         m_Layer->DataSet( m_Data.GetData() );
@@ -89,10 +93,6 @@ void gpSeries::RefreshChart( gpCHART_KIND gpChart_kind, double samplerate,
         m_Layer->DataSet( m_Layer->GetCustom(
                     customXFormula, wxEmptyString) );
     }
-	 /*= getBarChartLayer()->GetMinY();
-	double max = getBarChartLayer()->GetMaxY();
-	getBarChartLayer()->SetMinY(max);
-	getBarChartLayer()->SetMaxY(min);*/
 }
 
 /*!

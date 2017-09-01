@@ -282,6 +282,8 @@ class baseXYData : public CMinMax, public gpMath
 		 */
 		virtual ~baseXYData();
 
+		void invertY();
+
         /** Get smallest X value, which Y-value  not zero*/
 		double GetMinXwhichNotZero();
 		double GetMaxXwitchNotZero();

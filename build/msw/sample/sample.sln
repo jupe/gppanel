@@ -1,7 +1,12 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.12
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sample", "sample.vcxproj", "{2A4E1B77-4B3E-49BE-88C2-3DB22BAF0B64}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EA09AF2B-C1B9-4118-B2D6-0A5ECCD55859} = {EA09AF2B-C1B9-4118-B2D6-0A5ECCD55859}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gppanel", "..\gppanel\gppanel.vcxproj", "{EA09AF2B-C1B9-4118-B2D6-0A5ECCD55859}"
 EndProject

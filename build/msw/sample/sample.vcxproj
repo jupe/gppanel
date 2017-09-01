@@ -13,12 +13,14 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2A4E1B77-4B3E-49BE-88C2-3DB22BAF0B64}</ProjectGuid>
     <RootNamespace>sample</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -51,7 +53,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>wxmsw30ud_core.lib;wxbase30ud.lib;wxpngd.lib;wxzlibd.lib;wxjpegd.lib;rpcrt4.lib;winmm.lib;wsock32.lib;wxtiffd.lib;comctl32.lib;gpPanel.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>C:\Users\sergiosvieira\Projects\wxWidgets\lib\vc_lib\wxmsw31ud_core.lib;C:\Users\sergiosvieira\Projects\wxWidgets\lib\vc_lib\wxbase31ud.lib;C:\Users\sergiosvieira\Projects\wxWidgets\lib\vc_lib\wxpngd.lib;C:\Users\sergiosvieira\Projects\wxWidgets\lib\vc_lib\wxtiffd.lib;C:\Users\sergiosvieira\Projects\wxWidgets\lib\vc_lib\wxjpegd.lib;C:\Users\sergiosvieira\Projects\wxWidgets\lib\vc_lib\wxzlibd.lib;C:\Users\sergiosvieira\Projects\wxWidgets\lib\vc_lib\wxregexud.lib;C:\Users\sergiosvieira\Projects\wxWidgets\lib\vc_lib\wxexpatd.lib;rpcrt4.lib;winmm.lib;wsock32.lib;wxtiffd.lib;comctl32.lib;C:\Users\sergiosvieira\Projects\gppanel\build\msw\sample\Debug\gppanel.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
