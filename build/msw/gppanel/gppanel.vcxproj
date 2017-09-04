@@ -13,12 +13,14 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{EA09AF2B-C1B9-4118-B2D6-0A5ECCD55859}</ProjectGuid>
     <RootNamespace>gppanel</RootNamespace>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -70,6 +72,7 @@
     <ClInclude Include="..\..\..\include\baseData.h" />
     <ClInclude Include="..\..\..\include\Fourier.h" />
     <ClInclude Include="..\..\..\include\Fourier.inline.h" />
+    <ClInclude Include="..\..\..\include\gpBarLayer.h" />
     <ClInclude Include="..\..\..\include\gpFormula.h" />
     <ClInclude Include="..\..\..\include\gpLayer.h" />
     <ClInclude Include="..\..\..\include\gpLineLayer.h" />
@@ -86,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\gpPanel\baseData.cpp" />
+    <ClCompile Include="..\..\..\gpPanel\gpBarLayer.cpp" />
     <ClCompile Include="..\..\..\gpPanel\gpLayer.cpp" />
     <ClCompile Include="..\..\..\gpPanel\gpLineLayer.cpp" />
     <ClCompile Include="..\..\..\gpPanel\gpPanel.cpp" />

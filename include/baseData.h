@@ -282,6 +282,8 @@ class baseXYData : public CMinMax, public gpMath
 		 */
 		virtual ~baseXYData();
 
+		void invertY();
+
         /** Get smallest X value, which Y-value  not zero*/
 		double GetMinXwhichNotZero();
 		double GetMaxXwitchNotZero();
@@ -612,7 +614,7 @@ class MixedLineChartLayer : public mpFXY, public baseXYMixedData
  *  Mixed Line chart
  *  -use baseXYMixedLayer
  */
-class lineChartLayer : public mpFXY,  public baseXYData
+class lineChartLayer : public mpXYArea,  public baseXYData
 {
     private:
 

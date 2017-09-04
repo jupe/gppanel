@@ -7,6 +7,7 @@
 gpSeries::gpSeries( wxString label )
 {
     m_Layer = new lineChartLayer( label );
+	m_barLayer = new barChartLayer(label);
     m_Label = label;
 }
 
@@ -17,6 +18,11 @@ gpSeries::gpSeries( wxString label )
 gpSeries::~gpSeries( void )
 {
     //delete m_Layer;
+}
+
+void gpSeries::invertY()
+{
+	m_Data.invertY();
 }
 
 
@@ -44,9 +50,8 @@ void gpSeries::RefreshChart( gpCHART_KIND gpChart_kind, double samplerate,
             gpAXIS_SCALE gpYaxis_type )
 {
     m_Layer->DataSet( m_Data.GetData() );
-
-
-
+	m_barLayer->DataSet(m_Data.GetData());
+	m_barLayer->SetGradientBackColour(false);
     if(gpChart_kind== gpCHART_DEFAULT)
     {
         m_Layer->DataSet( m_Data.GetData() );
@@ -90,7 +95,6 @@ void gpSeries::RefreshChart( gpCHART_KIND gpChart_kind, double samplerate,
     }
 }
 
-
 /*!
  *  \brief Checks to see if a label is the same as the label for this series.
  *
@@ -119,6 +123,7 @@ bool gpSeries::IsLabel( wxString CompareLabel )
 void gpSeries::SetContinuity( bool continuity )
 {
     m_Layer->SetContinuity( continuity );
+	m_barLayer->SetContinuity(continuity);
 }
 
 
@@ -128,6 +133,7 @@ void gpSeries::SetContinuity( bool continuity )
 void gpSeries::SetVisible( bool show )
 {
     m_Layer->SetVisible( show );
+	m_barLayer->SetVisible(show);
 }
 
 
@@ -137,6 +143,7 @@ void gpSeries::SetVisible( bool show )
 void gpSeries::ShowName( bool show )
 {
    m_Layer->ShowName( show );
+   m_barLayer->ShowName(show);
 }
 
 /*!
@@ -157,6 +164,13 @@ mpLayer* gpSeries::GetLayer( void )
 void gpSeries::SetPen( wxPen pen )
 {
     m_Layer->SetPen( pen );
+	m_barLayer->SetPen(pen);
+}
+
+void gpSeries::SetBrush(wxBrush brush)
+{
+	m_Layer->SetBrush(brush);
+	m_barLayer->SetBrush(brush);
 }
 
 
@@ -178,4 +192,9 @@ void gpSeries::DataClear( void )
 xyMultimap_t gpSeries::GetData( void )
 {
     return m_Data.GetData();
+}
+
+barChartLayer * gpSeries::getBarChartLayer()
+{
+	return m_barLayer;
 }

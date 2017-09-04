@@ -38,6 +38,7 @@ enum gpLAYER_TYPE
     ,gpLAYER_HITS
     ,gpLAYER_LINE
     ,gpLAYER_TDCRESULT
+	,gpLAYER_BAR
 };
 
 /**
@@ -413,7 +414,7 @@ class gpLayer : public gpMenu, public wxToolTip
 		/**
 		 *  @return mpLayerList_t*
 		 */
-		mpLayerList_t* GetLayerList();
+		virtual mpLayerList_t* GetLayerList();
 
 
 		/// @}

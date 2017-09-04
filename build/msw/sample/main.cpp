@@ -7,6 +7,7 @@
 //gpPanel widget
 #include <gpPanel.h>
 #include <gpLineLayer.h>
+#include <gpBarLayer.h>
 
 class MyFrame: public wxFrame
 {
@@ -40,25 +41,32 @@ void MyApp::gpTest(wxWindow* parentWindow)
     gpPanel* graphPanel = new gpPanel( parentWindow, wxNewId(), wxDefaultPosition,wxSize(240,336) );
 
     //create new line layer for each chart with its own axes and titles
-    gpLineLayer* lli = new gpLineLayer(_("No Line :("), _("sample number"), _("I component"));
-    gpLineLayer* llq = new gpLineLayer(_("No Line :("), _("sample number"), _("Q component"));
-    gpLineLayer* lliq = new gpLineLayer(_("No Line:("), _("sample number"), _("IQ Plot"));
-
+    //gpLineLayer* lli = new gpLineLayer(_("No Line :("), _("sample number"), _("I component"));
+    //gpLineLayer* llq = new gpLineLayer(_("No Line :("), _("sample number"), _("Q component"));
+    //gpLineLayer* lliq = new gpLineLayer(_("No Line:("), _("sample number"), _("IQ Plot"));
+	gpBarLayer* barLayer = new gpBarLayer(_("Bar Chart Layer"), _("sample number"), _("y"));
+	
     // Multiple data series can be plotted on a single graph
-    gpSeries* s1 = lliq->AddSeriesLayer("I");
-    gpSeries* s2 = lliq->AddSeriesLayer("Q");
+    //gpSeries* s1 = lliq->AddSeriesLayer("I");
+    //gpSeries* s2 = lliq->AddSeriesLayer("Q");
     // Or on separate graphs
-    gpSeries* si = lli->AddSeriesLayer("I");
-    gpSeries* sq = llq->AddSeriesLayer("Q");
-
+    //gpSeries* si = lliq->AddSeriesLayer("I");
+    //gpSeries* sq = llq->AddSeriesLayer("Q");
+	barLayer->type(gpBarLayer::Type::LINE);
+	gpSeries* sb = barLayer->AddSeriesLayer("S");
+	sb->SetBrush((wxBrush&)*wxBLUE_BRUSH);
+	barLayer->type(gpBarLayer::Type::LINE);
+	gpSeries* sq = barLayer->AddSeriesLayer("Q");
+	sq->SetPen((wxPen&)*wxRED_PEN);
+	sq->SetBrush((wxBrush&)*wxRED_BRUSH);
     // Series colors can be selected via SetPen()
-    si->SetPen((wxPen&) *wxRED_PEN);
-    sq->SetPen((wxPen&) *wxBLUE_PEN);
-    s1->SetPen((wxPen&) *wxRED_PEN);
-    s2->SetPen((wxPen&) *wxBLUE_PEN);
+    //si->SetPen((wxPen&) *wxRED_PEN);
+    //sq->SetPen((wxPen&) *wxBLUE_PEN);
+    //s1->SetPen((wxPen&) *wxRED_PEN);
+    //s2->SetPen((wxPen&) *wxBLUE_PEN);
 
     //Push data to each series
-    for(int i = 0; i < 250; i++)
+    for(int i = 0; i < 50; i++)
     {
         // Generate a random angle between 0 and 2PI
         double theta =((double)rand()/(double)RAND_MAX) * 2 * M_PI;
@@ -67,27 +75,33 @@ void MyApp::gpTest(wxWindow* parentWindow)
         double ph_q = sin(theta);
         
         // Add the components to the data series for the separate plots
-        si->DataPush( i, ph_i );
-        sq->DataPush( i, ph_q );
+        //si->DataPush( i, ph_i );
+        //sq->DataPush( i, ph_q );
         // Add the componenets to the data series for the combined plots
-        s1->DataPush( i, ph_i );
-        s2->DataPush( i, ph_q );
+        //s1->DataPush( i, ph_i );
+        //s2->DataPush( i, ph_q );
+		//sb->DataPush(i, i);
+		sq->DataPush(i, ph_i + 1);
+		//si->DataPush(i, i);
     }
-
+	//sq->invertY();
+	//sb->invertY();
     // Each layer must be added to the panel.
     // Popup menu options can be specified in the second mask parameter, or 0 for none.
-    graphPanel->AddLayer( lli, POPUP_FILE | POPUP_CHART | POPUP_EDIT | POPUP_HELP | POPUP_FIT );
-    graphPanel->AddLayer( llq, POPUP_FILE | POPUP_CHART | POPUP_EDIT | POPUP_HELP | POPUP_FIT );
-    graphPanel->AddLayer( lliq, POPUP_FILE | POPUP_CHART | POPUP_EDIT | POPUP_HELP | POPUP_FIT );
-
+    //graphPanel->AddLayer( lli, POPUP_FILE | POPUP_CHART | POPUP_EDIT | POPUP_HELP | POPUP_FIT );
+    //graphPanel->AddLayer( llq, POPUP_FILE | POPUP_CHART | POPUP_EDIT | POPUP_HELP | POPUP_FIT );
+    //graphPanel->AddLayer( lliq, POPUP_FILE | POPUP_CHART | POPUP_EDIT | POPUP_HELP | POPUP_FIT );
+	graphPanel->AddLayer(barLayer);
     // Refresh the layers with the series data
-    lli->RefreshChart();
-    llq->RefreshChart();
-    lliq->RefreshChart();
+    //lli->RefreshChart();
+    //llq->RefreshChart();
+    //lliq->RefreshChart();
+	barLayer->RefreshChart();
     // Fit the charts to the panel size
-    graphPanel->Fit(lli);
-    graphPanel->Fit(llq);
-    graphPanel->Fit(lliq);
+    //graphPanel->Fit(lli);
+    //graphPanel->Fit(llq);
+    //graphPanel->Fit(lliq);
+	graphPanel->Fit(barLayer);
 }
 
 bool MyApp::OnInit()

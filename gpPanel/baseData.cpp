@@ -187,6 +187,22 @@ baseXYData::baseXYData(const baseXYData& copy)
 }
 baseXYData::~baseXYData(){}
 
+void baseXYData::invertY()
+{
+	double maxY = GetMaxY();
+	for (auto &value : m_data)
+	{
+		if (value.second >= 0)
+		{
+			value.second = std::fabs(maxY - value.second);
+		}
+		else
+		{
+
+		}
+	}
+}
+
 /** Get smallest X value, which Y-value  not zero*/
 double baseXYData::GetMinXwhichNotZero()
 {
@@ -855,7 +871,7 @@ void MixedLineChartLayer::Rewind()
  /* ******************************************** */
 /*  		DEFAULT LINE CHART LAYER  			 */
 /* ********************************************* */
-lineChartLayer::lineChartLayer(wxString label) : mpFXY( label ), baseXYData( )
+lineChartLayer::lineChartLayer(wxString label) : mpXYArea( label ), baseXYData( )
 {
 	m_drawOutsideMargins 	= false;
 }

@@ -126,10 +126,10 @@ void gpSizer::Realize()
 		{
 			newsizer->Add( window.GetWindow(),
 						   window.GetProportion(),
-						   wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, m_border);
+						   wxALL|wxEXPAND, m_border);
 
 		}
-		m_topSizer->Add(newsizer, 1, wxALL|wxEXPAND|wxALIGN_TOP|wxALIGN_BOTTOM, 0);
+		m_topSizer->Add(newsizer, 1, wxALL|wxEXPAND, 0);
 	}
 	int x,y;
 	m_parent->GetPosition(&x, &y);

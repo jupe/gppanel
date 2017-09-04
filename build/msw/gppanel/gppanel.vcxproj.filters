@@ -63,6 +63,9 @@
     <ClInclude Include="..\..\..\include\symbols.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\include\gpBarLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\gpPanel\math\gpFormula.cpp">
@@ -102,6 +105,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\gpPanel\mathplot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\gpPanel\gpBarLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

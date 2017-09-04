@@ -23,7 +23,7 @@
  */
 
  #include "gpFormula.h"
-
+#include <math.h>
 /*std::string d2string(double d)
 {
     std::stringstream ostr;
@@ -251,7 +251,7 @@ gpOper* gpFormulaParser::operator_valid(string token)
 /* gpFormula */
 
 gpFormula::gpFormula(){}
-
+# define M_PI           3.14159265358979323846  /* pi */
 gpFormula::gpFormula(string formula)
 {
 	m_strformula = formula;
